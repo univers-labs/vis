@@ -1,5 +1,5 @@
 {
-  "name": "vis",
+  "name": "@universlabs/vis",
   "version": "4.16.1",
   "description": "A dynamic, browser-based visualization library.",
   "homepage": "http://visjs.org/",
