@@ -5,7 +5,7 @@
  * A dynamic, browser-based visualization library.
  *
  * @version 4.16.1
- * @date    2016-06-02
+ * @date    2016-06-06
  *
  * @license
  * Copyright (C) 2011-2016 Almende B.V, http://almende.com
@@ -28767,7 +28767,7 @@ return /******/ (function(modules) { // webpackBootstrap
       }
 
       // copy the global fields over
-      var fields = ['locale', 'locales', 'clickToUse'];
+      var fields = ['locale', 'locales', 'clickToUse', 'edgesSortFn'];
       util.selectiveDeepExtend(fields, this.options, options);
 
       // the hierarchical system can adapt the edges and the physics to it's own options because not all combinations work with the hierarichical system.
@@ -28873,6 +28873,10 @@ return /******/ (function(modules) { // webpackBootstrap
           this.body.edgeIndices.push(edges[edgeId].id);
         }
       }
+    }
+
+    if (this.options.edgesSortFn) {
+      this.body.edgeIndices.sort(this.options.edgesSortFn);
     }
   };
 
@@ -44373,6 +44377,7 @@ return /******/ (function(modules) { // webpackBootstrap
     //globals :
     autoResize: { boolean: boolean },
     clickToUse: { boolean: boolean },
+    edgesSortFn: { 'function': 'function' },
     locale: { string: string },
     locales: {
       __any__: { any: any },
