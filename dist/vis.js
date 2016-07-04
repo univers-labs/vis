@@ -4,8 +4,8 @@
  *
  * A dynamic, browser-based visualization library.
  *
- * @version 4.16.1
- * @date    2016-06-06
+ * @version 4.16.2
+ * @date    2016-07-04
  *
  * @license
  * Copyright (C) 2011-2016 Almende B.V, http://almende.com
@@ -33289,13 +33289,13 @@ return /******/ (function(modules) { // webpackBootstrap
       key: 'drawArrows',
       value: function drawArrows(ctx, arrowData) {
         if (this.options.arrows.from.enabled === true) {
-          this.edgeType.drawArrowHead(ctx, this.selected, this.hover, arrowData.from);
+          this.edgeType.drawChevron(ctx, this.selected, this.hover, arrowData.from);
         }
         if (this.options.arrows.middle.enabled === true) {
-          this.edgeType.drawArrowHead(ctx, this.selected, this.hover, arrowData.middle);
+          this.edgeType.drawChevron(ctx, this.selected, this.hover, arrowData.middle);
         }
         if (this.options.arrows.to.enabled === true) {
-          this.edgeType.drawArrowHead(ctx, this.selected, this.hover, arrowData.to);
+          this.edgeType.drawChevron(ctx, this.selected, this.hover, arrowData.to);
         }
       }
     }, {
@@ -34004,7 +34004,7 @@ return /******/ (function(modules) { // webpackBootstrap
       value: function _drawDashedLine(ctx, viaNode, fromPoint, toPoint) {
         ctx.lineCap = 'round';
         var pattern = [5, 5];
-        if (Array.isArray(this.options.dashes) === true) {
+        if (typeof this.options.dashes[0] === 'number') {
           pattern = this.options.dashes;
         }
 
@@ -34450,6 +34450,24 @@ return /******/ (function(modules) { // webpackBootstrap
         var arrowCore = { x: xi, y: yi };
 
         return { point: arrowPoint, core: arrowCore, angle: angle, length: length };
+      }
+    }, {
+      key: 'drawChevron',
+      value: function drawChevron(ctx, selected, hover, arrowData) {
+        ctx.beginPath();
+        // ctx.setLineDash([])
+
+        var p2 = arrowData.point;
+        var angle = arrowData.angle;
+        var arrowHeadLength = arrowData.length;
+
+        ctx.moveTo(p2.x, p2.y);
+        ctx.lineTo(p2.x - arrowHeadLength * Math.cos(angle - Math.PI / 4), p2.y - arrowHeadLength * Math.sin(angle - Math.PI / 4));
+        ctx.moveTo(p2.x, p2.y);
+        ctx.lineTo(p2.x - arrowHeadLength * Math.cos(angle + Math.PI / 4), p2.y - arrowHeadLength * Math.sin(angle + Math.PI / 4));
+
+        ctx.stroke();
+        ctx.closePath();
       }
 
       /**
@@ -39343,6 +39361,10 @@ return /******/ (function(modules) { // webpackBootstrap
       this.popup = undefined;
       this.popupObj = undefined;
       this.popupTimer = undefined;
+      this.ancillaryPopups = {
+        from: undefined,
+        to: undefined
+      };
 
       this.body.functions.getPointer = this.getPointer.bind(this);
 
@@ -39355,6 +39377,10 @@ return /******/ (function(modules) { // webpackBootstrap
           enabled: false,
           speed: { x: 10, y: 10, zoom: 0.02 },
           bindToWindow: true
+        },
+        labelOffset: {
+          x: 0,
+          y: 0
         },
         navigationButtons: false,
         tooltipDelay: 300,
@@ -39871,6 +39897,16 @@ return /******/ (function(modules) { // webpackBootstrap
             this.zoom(scale, pointer);
           }
 
+          if (this.popupObj !== undefined) {
+            if (this.ancillaryPopups.from !== undefined) {
+              this.ancillaryPopups.from.hide();
+              this.ancillaryPopups.to.hide();
+            }
+            this.popupObj = undefined;
+            this.popup.hide();
+            this.body.emitter.emit('hidePopup');
+          }
+
           // Prevent default actions caused by mouse wheel.
           event.preventDefault();
         }
@@ -39899,8 +39935,7 @@ return /******/ (function(modules) { // webpackBootstrap
           // if the popup was not hidden above
           if (this.popup.hidden === false) {
             popupVisible = true;
-            this.popup.setPosition(pointer.x + 3, pointer.y - 5);
-            this.popup.show();
+            this.popup.show(true, this.popupObj);
           }
         }
 
@@ -40018,13 +40053,60 @@ return /******/ (function(modules) { // webpackBootstrap
             // adjust a small offset such that the mouse cursor is located in the
             // bottom left location of the popup, and you can easily move over the
             // popup area
-            this.popup.setPosition(pointer.x + 3, pointer.y - 5);
+            var px = void 0,
+                py = void 0;
+            if (popupType === 'node') {
+              px = this.canvas._XconvertCanvasToDOM(this.popupObj.x);
+              py = this.canvas._YconvertCanvasToDOM(this.popupObj.y);
+            } else if (popupType === 'edge') {
+              px = this.canvas._XconvertCanvasToDOM((this.popupObj.from.x + this.popupObj.to.x) / 2);
+              py = this.canvas._YconvertCanvasToDOM((this.popupObj.from.y + this.popupObj.to.y) / 2);
+
+              if (this.ancillaryPopups.from === undefined) {
+                this.ancillaryPopups.from = new _Popup2.default(this.canvas.frame);
+                this.ancillaryPopups.to = new _Popup2.default(this.canvas.frame);
+              }
+
+              var afx = this.canvas._XconvertCanvasToDOM(this.popupObj.from.x);
+              var afy = this.canvas._YconvertCanvasToDOM(this.popupObj.from.y);
+
+              afx += this.options.labelOffset.x;
+              afy += this.options.labelOffset.y;
+
+              var atx = this.canvas._XconvertCanvasToDOM(this.popupObj.to.x);
+              var aty = this.canvas._YconvertCanvasToDOM(this.popupObj.to.y);
+
+              atx += this.options.labelOffset.x;
+              aty += this.options.labelOffset.y;
+
+              this.ancillaryPopups.from.popupTargetType = 'node';
+              this.ancillaryPopups.to.popupTargetType = 'node';
+
+              this.ancillaryPopups.from.popupTargetId = this.popupObj.from.id;
+              this.ancillaryPopups.to.popupTargetId = this.popupObj.to.id;
+
+              this.ancillaryPopups.from.setPosition(afx, afy);
+              this.ancillaryPopups.from.setText(this.popupObj.from.getTitle());
+              this.ancillaryPopups.from.show();
+
+              this.ancillaryPopups.to.setPosition(atx, aty);
+              this.ancillaryPopups.to.setText(this.popupObj.to.getTitle());
+              this.ancillaryPopups.to.show();
+            }
+
+            px += this.options.labelOffset.x;
+            py += this.options.labelOffset.y;
+            this.popup.setPosition(px, py);
             this.popup.setText(this.popupObj.getTitle());
-            this.popup.show();
-            this.body.emitter.emit('showPopup', this.popupObj.id);
+            this.popup.show(true, this.popupObj);
+            this.body.emitter.emit('showPopup', this.popupObj.id, popupType);
           }
         } else {
           if (this.popup !== undefined) {
+            if (this.ancillaryPopups.from !== undefined) {
+              this.ancillaryPopups.from.hide();
+              this.ancillaryPopups.to.hide();
+            }
             this.popup.hide();
             this.body.emitter.emit('hidePopup');
           }
@@ -40064,6 +40146,10 @@ return /******/ (function(modules) { // webpackBootstrap
         }
 
         if (stillOnObj === false) {
+          if (this.ancillaryPopups.from !== undefined) {
+            this.ancillaryPopups.from.hide();
+            this.ancillaryPopups.to.hide();
+          }
           this.popupObj = undefined;
           this.popup.hide();
           this.body.emitter.emit('hidePopup');
@@ -40482,7 +40568,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
     }, {
       key: 'show',
-      value: function show(doShow) {
+      value: function show(doShow, popupObj) {
         if (doShow === undefined) {
           doShow = true;
         }
@@ -40507,6 +40593,10 @@ return /******/ (function(modules) { // webpackBootstrap
           }
           if (left < this.padding) {
             left = this.padding;
+          }
+
+          if (popupObj !== undefined) {
+            this.frame.setAttribute('graph-id', popupObj.id);
           }
 
           this.frame.style.left = left + "px";
@@ -44194,6 +44284,11 @@ return /******/ (function(modules) { // webpackBootstrap
         speed: { x: { number: number }, y: { number: number }, zoom: { number: number }, __type__: { object: object } },
         bindToWindow: { boolean: boolean },
         __type__: { object: object, boolean: boolean }
+      },
+      labelOffset: {
+        x: { number: number },
+        y: { number: number },
+        __type__: { object: object, number: number }
       },
       multiselect: { boolean: boolean },
       navigationButtons: { boolean: boolean },
