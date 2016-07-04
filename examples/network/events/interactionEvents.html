@@ -35,10 +35,10 @@
 
     // create an array with edges
     var edges = new vis.DataSet([
-        {from: 1, to: 3},
-        {from: 1, to: 2},
-        {from: 2, to: 4},
-        {from: 2, to: 5}
+        {from: 1, to: 3, title: 'I am a label'},
+        {from: 1, to: 2, title: 'I am a label'},
+        {from: 2, to: 4, title: 'I am a label'},
+        {from: 2, to: 5, title: 'I am a label'}
     ]);
 
     // create a network
@@ -47,7 +47,24 @@
         nodes: nodes,
         edges: edges
     };
-    var options = {interaction:{hover:true}};
+    var options = {
+        interaction:{
+            hover:true,
+            labelOffset: {
+                x: -50,
+                y: -10
+            }
+        },
+        edges:{
+            dashes:false,
+            arrows:{
+                middle:{
+                    enabled:true,
+                    scaleFactor:0.5
+                }
+            }
+        }
+    };
     var network = new vis.Network(container, data, options);
 
     network.on("click", function (params) {
