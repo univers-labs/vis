@@ -5,7 +5,7 @@
  * A dynamic, browser-based visualization library.
  *
  * @version 4.16.4
- * @date    2016-07-04
+ * @date    2016-07-12
  *
  * @license
  * Copyright (C) 2011-2016 Almende B.V, http://almende.com
@@ -33349,7 +33349,7 @@ return /******/ (function(modules) { // webpackBootstrap
       key: 'isOverlappingWith',
       value: function isOverlappingWith(obj) {
         if (this.connected) {
-          var distMax = 10;
+          var distMax = 50;
           var xFrom = this.from.x;
           var yFrom = this.from.y;
           var xTo = this.to.x;
@@ -33432,7 +33432,7 @@ return /******/ (function(modules) { // webpackBootstrap
         var allowDeletion = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
         var globalOptions = arguments.length <= 3 || arguments[3] === undefined ? {} : arguments[3];
 
-        var fields = ['arrowStrikethrough', 'id', 'from', 'hidden', 'hoverWidth', 'label', 'labelHighlightBold', 'length', 'line', 'opacity', 'physics', 'scaling', 'selectionWidth', 'selfReferenceSize', 'to', 'title', 'value', 'width'];
+        var fields = ['arrowStrikethrough', 'id', 'from', 'hidden', 'hoverWidth', 'label', 'labelHighlightBold', 'length', 'line', 'opacity', 'physics', 'scaling', 'selectionWidth', 'selfReferenceSize', 'inactive', 'to', 'title', 'value', 'width'];
 
         // only deep extend the items in the field array. These do not have shorthand.
         util.selectiveDeepExtend(fields, parentOptions, newOptions, allowDeletion);
@@ -38129,6 +38129,8 @@ return /******/ (function(modules) { // webpackBootstrap
     value: true
   });
 
+  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
   var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -38295,61 +38297,104 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: '_redraw',
       value: function _redraw() {
+        var _this3 = this;
+
         var hidden = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
 
         if (this.allowRedraw === true) {
-          this.body.emitter.emit("initRedraw");
+          var _ret = function () {
+            _this3.body.emitter.emit("initRedraw");
 
-          this.redrawRequested = false;
-          var ctx = this.canvas.frame.canvas.getContext('2d');
+            _this3.redrawRequested = false;
+            var ctx = _this3.canvas.frame.canvas.getContext('2d');
 
-          // when the container div was hidden, this fixes it back up!
-          if (this.canvas.frame.canvas.width === 0 || this.canvas.frame.canvas.height === 0) {
-            this.canvas.setSize();
-          }
-
-          this.pixelRatio = (window.devicePixelRatio || 1) / (ctx.webkitBackingStorePixelRatio || ctx.mozBackingStorePixelRatio || ctx.msBackingStorePixelRatio || ctx.oBackingStorePixelRatio || ctx.backingStorePixelRatio || 1);
-
-          ctx.setTransform(this.pixelRatio, 0, 0, this.pixelRatio, 0, 0);
-
-          // clear the canvas
-          var w = this.canvas.frame.canvas.clientWidth;
-          var h = this.canvas.frame.canvas.clientHeight;
-          ctx.clearRect(0, 0, w, h);
-
-          // if the div is hidden, we stop the redraw here for performance.
-          if (this.canvas.frame.clientWidth === 0) {
-            return;
-          }
-
-          // set scaling and translation
-          ctx.save();
-          ctx.translate(this.body.view.translation.x, this.body.view.translation.y);
-          ctx.scale(this.body.view.scale, this.body.view.scale);
-
-          ctx.beginPath();
-          this.body.emitter.emit("beforeDrawing", ctx);
-          ctx.closePath();
-
-          if (hidden === false) {
-            if (this.dragging === false || this.dragging === true && this.options.hideEdgesOnDrag === false) {
-              this._drawEdges(ctx);
+            // when the container div was hidden, this fixes it back up!
+            if (_this3.canvas.frame.canvas.width === 0 || _this3.canvas.frame.canvas.height === 0) {
+              _this3.canvas.setSize();
             }
-          }
 
-          if (this.dragging === false || this.dragging === true && this.options.hideNodesOnDrag === false) {
-            this._drawNodes(ctx, hidden);
-          }
+            _this3.pixelRatio = (window.devicePixelRatio || 1) / (ctx.webkitBackingStorePixelRatio || ctx.mozBackingStorePixelRatio || ctx.msBackingStorePixelRatio || ctx.oBackingStorePixelRatio || ctx.backingStorePixelRatio || 1);
 
-          ctx.beginPath();
-          this.body.emitter.emit("afterDrawing", ctx);
-          ctx.closePath();
+            ctx.setTransform(_this3.pixelRatio, 0, 0, _this3.pixelRatio, 0, 0);
 
-          // restore original scaling and translation
-          ctx.restore();
-          if (hidden === true) {
+            // clear the canvas
+            var w = _this3.canvas.frame.canvas.clientWidth;
+            var h = _this3.canvas.frame.canvas.clientHeight;
             ctx.clearRect(0, 0, w, h);
-          }
+
+            // if the div is hidden, we stop the redraw here for performance.
+            if (_this3.canvas.frame.clientWidth === 0) {
+              return {
+                v: void 0
+              };
+            }
+
+            // set scaling and translation
+            ctx.save();
+            ctx.translate(_this3.body.view.translation.x, _this3.body.view.translation.y);
+            ctx.scale(_this3.body.view.scale, _this3.body.view.scale);
+
+            ctx.beginPath();
+            _this3.body.emitter.emit("beforeDrawing", ctx);
+            ctx.closePath();
+
+            // TODO possibly optimise this
+            var nodesMap = _this3.body.nodes;
+            var nodeIndices = _this3.body.nodeIndices;
+            var nodes = nodeIndices.map(function (n) {
+              return nodesMap[n];
+            });
+            var inactiveNodes = nodes.filter(function (n) {
+              return n.options.inactive;
+            });
+            var activeNodes = nodes.filter(function (n) {
+              return !n.options.inactive;
+            });
+
+            var edgesMap = _this3.body.edges;
+            var edgeIndices = _this3.body.edgeIndices;
+            var edges = edgeIndices.map(function (e) {
+              return edgesMap[e];
+            });
+            var inactiveEdges = edges.filter(function (e) {
+              return e.options.inactive;
+            });
+            var activeEdges = edges.filter(function (e) {
+              return !e.options.inactive;
+            });
+
+            if (hidden === false) {
+              if (_this3.dragging === false || _this3.dragging === true && _this3.options.hideEdgesOnDrag === false) {
+                _this3._drawEdges(ctx, inactiveEdges);
+              }
+            }
+
+            if (_this3.dragging === false || _this3.dragging === true && _this3.options.hideNodesOnDrag === false) {
+              _this3._drawNodes(ctx, inactiveNodes, hidden);
+            }
+
+            if (hidden === false) {
+              if (_this3.dragging === false || _this3.dragging === true && _this3.options.hideEdgesOnDrag === false) {
+                _this3._drawEdges(ctx, activeEdges);
+              }
+            }
+
+            if (_this3.dragging === false || _this3.dragging === true && _this3.options.hideNodesOnDrag === false) {
+              _this3._drawNodes(ctx, activeNodes, hidden);
+            }
+
+            ctx.beginPath();
+            _this3.body.emitter.emit("afterDrawing", ctx);
+            ctx.closePath();
+
+            // restore original scaling and translation
+            ctx.restore();
+            if (hidden === true) {
+              ctx.clearRect(0, 0, w, h);
+            }
+          }();
+
+          if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
         }
       }
 
@@ -38399,11 +38444,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
     }, {
       key: '_drawNodes',
-      value: function _drawNodes(ctx) {
-        var alwaysShow = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+      value: function _drawNodes(ctx, nodes) {
+        var alwaysShow = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
 
-        var nodes = this.body.nodes;
-        var nodeIndices = this.body.nodeIndices;
         var node = void 0;
         var selected = [];
         var margin = 20;
@@ -38415,11 +38458,11 @@ return /******/ (function(modules) { // webpackBootstrap
         var viewableArea = { top: topLeft.y, left: topLeft.x, bottom: bottomRight.y, right: bottomRight.x };
 
         // draw unselected nodes;
-        for (var i = 0; i < nodeIndices.length; i++) {
-          node = nodes[nodeIndices[i]];
+        for (var i = 0; i < nodes.length; i++) {
+          node = nodes[i];
           // set selected nodes aside
           if (node.isSelected()) {
-            selected.push(nodeIndices[i]);
+            selected.push(node);
           } else {
             if (alwaysShow === true) {
               node.draw(ctx);
@@ -38433,7 +38476,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
         // draw the selected nodes on top
         for (var _i = 0; _i < selected.length; _i++) {
-          node = nodes[selected[_i]];
+          node = selected[_i];
           node.draw(ctx);
         }
       }
@@ -38447,13 +38490,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
     }, {
       key: '_drawEdges',
-      value: function _drawEdges(ctx) {
-        var edges = this.body.edges;
-        var edgeIndices = this.body.edgeIndices;
+      value: function _drawEdges(ctx, edges) {
         var edge = void 0;
 
-        for (var i = 0; i < edgeIndices.length; i++) {
-          edge = edges[edgeIndices[i]];
+        for (var i = 0; i < edges.length; i++) {
+          edge = edges[i];
           if (edge.connected === true) {
             edge.draw(ctx);
           }
@@ -40059,39 +40100,70 @@ return /******/ (function(modules) { // webpackBootstrap
               px = this.canvas._XconvertCanvasToDOM(this.popupObj.x);
               py = this.canvas._YconvertCanvasToDOM(this.popupObj.y);
             } else if (popupType === 'edge') {
-              px = this.canvas._XconvertCanvasToDOM((this.popupObj.from.x + this.popupObj.to.x) / 2);
-              py = this.canvas._YconvertCanvasToDOM((this.popupObj.from.y + this.popupObj.to.y) / 2);
+              var fromObj = this.popupObj.from;
+              var toObj = this.popupObj.to;
+
+              px = this.canvas._XconvertCanvasToDOM((fromObj.x + toObj.x) / 2);
+              py = this.canvas._YconvertCanvasToDOM((fromObj.y + toObj.y) / 2);
 
               if (this.ancillaryPopups.from === undefined) {
                 this.ancillaryPopups.from = new _Popup2.default(this.canvas.frame);
                 this.ancillaryPopups.to = new _Popup2.default(this.canvas.frame);
               }
 
-              var afx = this.canvas._XconvertCanvasToDOM(this.popupObj.from.x);
-              var afy = this.canvas._YconvertCanvasToDOM(this.popupObj.from.y);
+              var fromPopup = this.ancillaryPopups.from;
+              var toPopup = this.ancillaryPopups.to;
+
+              var angle = Math.atan2(fromObj.y - toObj.y, fromObj.x - toObj.x);
+
+              if (angle < Math.PI / 6 && angle > 0 || angle > -(Math.PI / 6) && angle < 0) {
+                // left hand side
+                if (fromObj.x < toObj.x) {
+                  fromPopup.setDirection('left');
+                  toPopup.setDirection('right');
+                } else {
+                  fromPopup.setDirection('right');
+                  toPopup.setDirection('left');
+                }
+              } else if (angle > Math.PI * (5 / 6) || angle < -(Math.PI * (5 / 6))) {
+                // right hand side
+                if (fromObj.x < toObj.x) {
+                  fromPopup.setDirection('left');
+                  toPopup.setDirection('right');
+                } else {
+                  fromPopup.setDirection('right');
+                  toPopup.setDirection('left');
+                }
+              } else {
+                fromPopup.setDirection('');
+                toPopup.setDirection('');
+              }
+
+              var afx = this.canvas._XconvertCanvasToDOM(fromObj.x);
+              var afy = this.canvas._YconvertCanvasToDOM(fromObj.y);
 
               afx += this.options.labelOffset.x;
               afy += this.options.labelOffset.y;
 
-              var atx = this.canvas._XconvertCanvasToDOM(this.popupObj.to.x);
-              var aty = this.canvas._YconvertCanvasToDOM(this.popupObj.to.y);
+              var atx = this.canvas._XconvertCanvasToDOM(toObj.x);
+              var aty = this.canvas._YconvertCanvasToDOM(toObj.y);
 
               atx += this.options.labelOffset.x;
               aty += this.options.labelOffset.y;
 
-              this.ancillaryPopups.from.popupTargetType = 'node';
-              this.ancillaryPopups.to.popupTargetType = 'node';
+              fromPopup.popupTargetType = 'node';
+              toPopup.popupTargetType = 'node';
 
-              this.ancillaryPopups.from.popupTargetId = this.popupObj.from.id;
-              this.ancillaryPopups.to.popupTargetId = this.popupObj.to.id;
+              fromPopup.popupTargetId = fromObj.id;
+              toPopup.popupTargetId = toObj.id;
 
-              this.ancillaryPopups.from.setPosition(afx, afy);
-              this.ancillaryPopups.from.setText(this.popupObj.from.getTitle());
-              this.ancillaryPopups.from.show();
+              fromPopup.setPosition(afx, afy);
+              fromPopup.setText(fromObj.getTitle());
+              fromPopup.show();
 
-              this.ancillaryPopups.to.setPosition(atx, aty);
-              this.ancillaryPopups.to.setText(this.popupObj.to.getTitle());
-              this.ancillaryPopups.to.show();
+              toPopup.setPosition(atx, aty);
+              toPopup.setText(toObj.getTitle());
+              toPopup.show();
             }
 
             px += this.options.labelOffset.x;
@@ -40543,6 +40615,11 @@ return /******/ (function(modules) { // webpackBootstrap
       value: function setPosition(x, y) {
         this.x = parseInt(x);
         this.y = parseInt(y);
+      }
+    }, {
+      key: 'setDirection',
+      value: function setDirection(direction) {
+        this.frame.setAttribute('direction', direction);
       }
 
       /**
