@@ -33349,7 +33349,10 @@ return /******/ (function(modules) { // webpackBootstrap
       key: 'isOverlappingWith',
       value: function isOverlappingWith(obj) {
         if (this.connected) {
-          var distMax = 50;
+          var distMax = 80;
+          if (this.options.ancillary) {
+            distMax = 10;
+          }
           var xFrom = this.from.x;
           var yFrom = this.from.y;
           var xTo = this.to.x;
@@ -33432,7 +33435,7 @@ return /******/ (function(modules) { // webpackBootstrap
         var allowDeletion = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
         var globalOptions = arguments.length <= 3 || arguments[3] === undefined ? {} : arguments[3];
 
-        var fields = ['arrowStrikethrough', 'id', 'from', 'hidden', 'hoverWidth', 'label', 'labelHighlightBold', 'length', 'line', 'opacity', 'physics', 'scaling', 'selectionWidth', 'selfReferenceSize', 'inactive', 'to', 'title', 'value', 'width'];
+        var fields = ['arrowStrikethrough', 'id', 'from', 'hidden', 'hoverWidth', 'label', 'labelHighlightBold', 'length', 'line', 'opacity', 'physics', 'scaling', 'selectionWidth', 'selfReferenceSize', 'inactive', 'ancillary', 'to', 'title', 'value', 'width'];
 
         // only deep extend the items in the field array. These do not have shorthand.
         util.selectiveDeepExtend(fields, parentOptions, newOptions, allowDeletion);
