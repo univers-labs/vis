@@ -39979,7 +39979,6 @@ return /******/ (function(modules) { // webpackBootstrap
           // if the popup was not hidden above
           if (this.popup.hidden === false) {
             popupVisible = true;
-            this.popup.show(true, this.popupObj);
           }
         }
 
@@ -39998,6 +39997,13 @@ return /******/ (function(modules) { // webpackBootstrap
             this.popupTimer = setTimeout(function () {
               return _this3._checkShowPopup(pointer);
             }, this.options.tooltipDelay);
+          }
+        } else {
+          this.positionPopups(pointer);
+          this.popup.show(true, this.popupObj);
+          if (this.popup.popupTargetType === 'edge') {
+            this.ancillaryPopups.from.show(true, this.popupObj.from);
+            this.ancillaryPopups.to.show(true, this.popupObj.to);
           }
         }
 
@@ -40097,17 +40103,10 @@ return /******/ (function(modules) { // webpackBootstrap
             // adjust a small offset such that the mouse cursor is located in the
             // bottom left location of the popup, and you can easily move over the
             // popup area
-            var px = void 0,
-                py = void 0;
-            if (popupType === 'node') {
-              px = this.canvas._XconvertCanvasToDOM(this.popupObj.x);
-              py = this.canvas._YconvertCanvasToDOM(this.popupObj.y);
-            } else if (popupType === 'edge') {
+
+            if (popupType === 'edge') {
               var fromObj = this.popupObj.from;
               var toObj = this.popupObj.to;
-
-              px = this.canvas._XconvertCanvasToDOM((fromObj.x + toObj.x) / 2);
-              py = this.canvas._YconvertCanvasToDOM((fromObj.y + toObj.y) / 2);
 
               if (this.ancillaryPopups.from === undefined) {
                 this.ancillaryPopups.from = new _Popup2.default(this.canvas.frame);
@@ -40117,63 +40116,23 @@ return /******/ (function(modules) { // webpackBootstrap
               var fromPopup = this.ancillaryPopups.from;
               var toPopup = this.ancillaryPopups.to;
 
-              var angle = Math.atan2(fromObj.y - toObj.y, fromObj.x - toObj.x);
-
-              if (angle < Math.PI / 6 && angle > 0 || angle > -(Math.PI / 6) && angle < 0) {
-                // left hand side
-                if (fromObj.x < toObj.x) {
-                  fromPopup.setDirection('left');
-                  toPopup.setDirection('right');
-                } else {
-                  fromPopup.setDirection('right');
-                  toPopup.setDirection('left');
-                }
-              } else if (angle > Math.PI * (5 / 6) || angle < -(Math.PI * (5 / 6))) {
-                // right hand side
-                if (fromObj.x < toObj.x) {
-                  fromPopup.setDirection('left');
-                  toPopup.setDirection('right');
-                } else {
-                  fromPopup.setDirection('right');
-                  toPopup.setDirection('left');
-                }
-              } else {
-                fromPopup.setDirection('');
-                toPopup.setDirection('');
-              }
-
-              var afx = this.canvas._XconvertCanvasToDOM(fromObj.x);
-              var afy = this.canvas._YconvertCanvasToDOM(fromObj.y);
-
-              afx += this.options.labelOffset.x;
-              afy += this.options.labelOffset.y;
-
-              var atx = this.canvas._XconvertCanvasToDOM(toObj.x);
-              var aty = this.canvas._YconvertCanvasToDOM(toObj.y);
-
-              atx += this.options.labelOffset.x;
-              aty += this.options.labelOffset.y;
-
               fromPopup.popupTargetType = 'node';
               toPopup.popupTargetType = 'node';
 
               fromPopup.popupTargetId = fromObj.id;
               toPopup.popupTargetId = toObj.id;
 
-              fromPopup.setPosition(afx, afy);
               fromPopup.setText(fromObj.getTitle());
-              fromPopup.show();
-
-              toPopup.setPosition(atx, aty);
               toPopup.setText(toObj.getTitle());
-              toPopup.show();
             }
 
-            px += this.options.labelOffset.x;
-            py += this.options.labelOffset.y;
-            this.popup.setPosition(px, py);
+            this.positionPopups(pointer);
             this.popup.setText(this.popupObj.getTitle());
             this.popup.show(true, this.popupObj);
+            if (popupType === 'edge') {
+              this.ancillaryPopups.from.show();
+              this.ancillaryPopups.to.show();
+            }
             this.body.emitter.emit('showPopup', this.popupObj.id, popupType);
           }
         } else {
@@ -40186,6 +40145,74 @@ return /******/ (function(modules) { // webpackBootstrap
             this.body.emitter.emit('hidePopup');
           }
         }
+      }
+    }, {
+      key: 'positionPopups',
+      value: function positionPopups(pointer) {
+        var x = this.canvas._XconvertDOMtoCanvas(pointer.x);
+        var y = this.canvas._YconvertDOMtoCanvas(pointer.y);
+        var px = void 0,
+            py = void 0;
+
+        var popupType = this.popup.popupTargetType;
+
+        if (popupType === 'node') {
+          px = this.canvas._XconvertCanvasToDOM(this.popupObj.x);
+          py = this.canvas._YconvertCanvasToDOM(this.popupObj.y);
+        } else if (popupType === 'edge') {
+          var fromObj = this.popupObj.from;
+          var toObj = this.popupObj.to;
+
+          var afx = this.canvas._XconvertCanvasToDOM(fromObj.x);
+          var afy = this.canvas._YconvertCanvasToDOM(fromObj.y);
+
+          var atx = this.canvas._XconvertCanvasToDOM(toObj.x);
+          var aty = this.canvas._YconvertCanvasToDOM(toObj.y);
+
+          px = (afx + atx) / 2;
+          py = (afy + aty) / 2;
+
+          var fromPopup = this.ancillaryPopups.from;
+          var toPopup = this.ancillaryPopups.to;
+
+          var angle = Math.atan2(fromObj.y - toObj.y, fromObj.x - toObj.x);
+
+          if (angle < Math.PI / 6 && angle > 0 || angle > -(Math.PI / 6) && angle < 0) {
+            // left hand side
+            if (fromObj.x < toObj.x) {
+              fromPopup.setDirection('left');
+              toPopup.setDirection('right');
+            } else {
+              fromPopup.setDirection('right');
+              toPopup.setDirection('left');
+            }
+          } else if (angle > Math.PI * (5 / 6) || angle < -(Math.PI * (5 / 6))) {
+            // right hand side
+            if (fromObj.x < toObj.x) {
+              fromPopup.setDirection('left');
+              toPopup.setDirection('right');
+            } else {
+              fromPopup.setDirection('right');
+              toPopup.setDirection('left');
+            }
+          } else {
+            fromPopup.setDirection('');
+            toPopup.setDirection('');
+          }
+
+          afx += this.options.labelOffset.x;
+          afy += this.options.labelOffset.y;
+
+          atx += this.options.labelOffset.x;
+          aty += this.options.labelOffset.y;
+
+          fromPopup.setPosition(afx, afy);
+          toPopup.setPosition(atx, aty);
+        }
+
+        px += this.options.labelOffset.x;
+        py += this.options.labelOffset.y;
+        this.popup.setPosition(px, py);
       }
 
       /**
