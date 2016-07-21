@@ -40650,6 +40650,8 @@ return /******/ (function(modules) { // webpackBootstrap
       this.padding = 5;
       this.hidden = false;
 
+      this.direction = null;
+
       // create the frame
       this.frame = document.createElement('div');
       this.frame.className = 'vis-network-tooltip';
@@ -40671,7 +40673,10 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: 'setDirection',
       value: function setDirection(direction) {
-        this.frame.setAttribute('direction', direction);
+        if (direction !== this.direction) {
+          this.frame.setAttribute('direction', direction);
+          this.direction = direction;
+        }
       }
 
       /**
@@ -40717,11 +40722,21 @@ return /******/ (function(modules) { // webpackBootstrap
           }
 
           var left = this.x;
-          if (left + width + this.padding > maxWidth) {
+          var w2 = width / 2;
+          var none = false;
+          if (left + w2 + this.padding > maxWidth) {
             left = maxWidth - width - this.padding;
+            this.setDirection('none');
+            none = true;
           }
-          if (left < this.padding) {
+          if (left - w2 < this.padding) {
             left = this.padding;
+            this.setDirection('none');
+            none = true;
+          }
+
+          if (!none && this.direction !== 'left' && this.direction !== 'right') {
+            this.setDirection('');
           }
 
           if (popupObj !== undefined) {
