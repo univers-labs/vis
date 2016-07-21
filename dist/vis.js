@@ -4,8 +4,8 @@
  *
  * A dynamic, browser-based visualization library.
  *
- * @version 4.16.4
- * @date    2016-07-12
+ * @version 4.16.5
+ * @date    2016-07-19
  *
  * @license
  * Copyright (C) 2011-2016 Almende B.V, http://almende.com
@@ -30322,7 +30322,6 @@ return /******/ (function(modules) { // webpackBootstrap
       key: 'select',
       value: function select() {
         this.selected = true;
-        this._reset();
       }
 
       /**
@@ -30333,7 +30332,6 @@ return /******/ (function(modules) { // webpackBootstrap
       key: 'unselect',
       value: function unselect() {
         this.selected = false;
-        this._reset();
       }
 
       /**
@@ -33435,7 +33433,7 @@ return /******/ (function(modules) { // webpackBootstrap
         var allowDeletion = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
         var globalOptions = arguments.length <= 3 || arguments[3] === undefined ? {} : arguments[3];
 
-        var fields = ['arrowStrikethrough', 'id', 'from', 'hidden', 'hoverWidth', 'label', 'labelHighlightBold', 'length', 'line', 'opacity', 'physics', 'scaling', 'selectionWidth', 'selfReferenceSize', 'inactive', 'ancillary', 'to', 'title', 'value', 'width'];
+        var fields = ['arrowStrikethrough', 'id', 'from', 'hidden', 'hoverWidth', 'label', 'labelHighlightBold', 'length', 'line', 'opacity', 'physics', 'scaling', 'selectionWidth', 'selfReferenceSize', 'inactive', 'data', 'ancillary', 'to', 'title', 'value', 'width'];
 
         // only deep extend the items in the field array. These do not have shorthand.
         util.selectiveDeepExtend(fields, parentOptions, newOptions, allowDeletion);
@@ -39999,7 +39997,7 @@ return /******/ (function(modules) { // webpackBootstrap
             }, this.options.tooltipDelay);
           }
         } else {
-          this.positionPopups(pointer);
+          this._positionPopups(pointer);
           this.popup.show(true, this.popupObj);
           if (this.popup.popupTargetType === 'edge') {
             this.ancillaryPopups.from.show(true, this.popupObj.from);
@@ -40126,9 +40124,12 @@ return /******/ (function(modules) { // webpackBootstrap
               toPopup.setText(toObj.getTitle());
             }
 
-            this.positionPopups(pointer);
             this.popup.setText(this.popupObj.getTitle());
+
+            this._positionPopups(pointer);
+
             this.popup.show(true, this.popupObj);
+
             if (popupType === 'edge') {
               this.ancillaryPopups.from.show();
               this.ancillaryPopups.to.show();
@@ -40147,8 +40148,8 @@ return /******/ (function(modules) { // webpackBootstrap
         }
       }
     }, {
-      key: 'positionPopups',
-      value: function positionPopups(pointer) {
+      key: '_positionPopups',
+      value: function _positionPopups(pointer) {
         var x = this.canvas._XconvertDOMtoCanvas(pointer.x);
         var y = this.canvas._YconvertDOMtoCanvas(pointer.y);
         var px = void 0,
@@ -40169,49 +40170,70 @@ return /******/ (function(modules) { // webpackBootstrap
           var atx = this.canvas._XconvertCanvasToDOM(toObj.x);
           var aty = this.canvas._YconvertCanvasToDOM(toObj.y);
 
+          var distance = Math.sqrt(Math.pow(atx - afx, 2) + Math.pow(aty - afy, 2));
+
           px = (afx + atx) / 2;
           py = (afy + aty) / 2;
 
           var fromPopup = this.ancillaryPopups.from;
           var toPopup = this.ancillaryPopups.to;
 
-          var angle = Math.atan2(fromObj.y - toObj.y, fromObj.x - toObj.x);
+          if (distance < 100) {
 
-          if (angle < Math.PI / 6 && angle > 0 || angle > -(Math.PI / 6) && angle < 0) {
-            // left hand side
+            var width = this.popup.frame.clientWidth;
             if (fromObj.x < toObj.x) {
+              fromPopup.setPosition(px - width / 2, py + this.options.labelOffset.y);
+              toPopup.setPosition(px + width / 2, py + this.options.labelOffset.y);
               fromPopup.setDirection('left');
               toPopup.setDirection('right');
             } else {
-              fromPopup.setDirection('right');
-              toPopup.setDirection('left');
-            }
-          } else if (angle > Math.PI * (5 / 6) || angle < -(Math.PI * (5 / 6))) {
-            // right hand side
-            if (fromObj.x < toObj.x) {
-              fromPopup.setDirection('left');
-              toPopup.setDirection('right');
-            } else {
+              fromPopup.setPosition(px + width / 2, py + this.options.labelOffset.y);
+              toPopup.setPosition(px - width / 2, py + this.options.labelOffset.y);
               fromPopup.setDirection('right');
               toPopup.setDirection('left');
             }
           } else {
-            fromPopup.setDirection('');
-            toPopup.setDirection('');
+
+            var angle = Math.atan2(fromObj.y - toObj.y, fromObj.x - toObj.x);
+
+            if (angle < Math.PI / 6 && angle > 0 || angle > -(Math.PI / 6) && angle < 0) {
+              // left hand side
+              if (fromObj.x < toObj.x) {
+                fromPopup.setDirection('left');
+                toPopup.setDirection('right');
+              } else {
+                fromPopup.setDirection('right');
+                toPopup.setDirection('left');
+              }
+            } else if (angle > Math.PI * (5 / 6) || angle < -(Math.PI * (5 / 6))) {
+              // right hand side
+              if (fromObj.x < toObj.x) {
+                fromPopup.setDirection('left');
+                toPopup.setDirection('right');
+              } else {
+                fromPopup.setDirection('right');
+                toPopup.setDirection('left');
+              }
+            } else {
+              fromPopup.setDirection('');
+              toPopup.setDirection('');
+            }
+
+            afx += this.options.labelOffset.x;
+            afy += this.options.labelOffset.y;
+
+            atx += this.options.labelOffset.x;
+            aty += this.options.labelOffset.y;
+
+            fromPopup.setPosition(afx, afy);
+            toPopup.setPosition(atx, aty);
           }
-
-          afx += this.options.labelOffset.x;
-          afy += this.options.labelOffset.y;
-
-          atx += this.options.labelOffset.x;
-          aty += this.options.labelOffset.y;
-
-          fromPopup.setPosition(afx, afy);
-          toPopup.setPosition(atx, aty);
         }
 
-        px += this.options.labelOffset.x;
-        py += this.options.labelOffset.y;
+        if (this.popupObj.options.type !== 'global' || popupType === 'node') {
+          px += this.options.labelOffset.x;
+          py += this.options.labelOffset.y;
+        }
         this.popup.setPosition(px, py);
       }
 
