@@ -4,8 +4,8 @@
  *
  * A dynamic, browser-based visualization library.
  *
- * @version 4.16.5
- * @date    2016-07-19
+ * @version 4.16.7
+ * @date    2016-10-18
  *
  * @license
  * Copyright (C) 2011-2016 Almende B.V, http://almende.com
@@ -100,12 +100,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
   'use strict';
 
-  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
   // utility functions
 
   // first check if moment.js is already loaded in the browser window, if so,
   // use this instance. Else, load via commonjs.
+
 
   var moment = __webpack_require__(2);
   var uuid = __webpack_require__(6);
@@ -211,7 +212,7 @@ return /******/ (function(modules) { // webpackBootstrap
    * @param value
    */
   exports.fillIfDefined = function (a, b) {
-    var allowDeletion = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+    var allowDeletion = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
     for (var prop in a) {
       if (b[prop] !== undefined) {
@@ -301,7 +302,7 @@ return /******/ (function(modules) { // webpackBootstrap
    * @return {Object} a
    */
   exports.selectiveDeepExtend = function (props, a, b) {
-    var allowDeletion = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
+    var allowDeletion = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
 
     // TODO: add support for Arrays to deepExtend
     if (Array.isArray(b)) {
@@ -349,7 +350,7 @@ return /******/ (function(modules) { // webpackBootstrap
    * @return {Object} a
    */
   exports.selectiveNotDeepExtend = function (props, a, b) {
-    var allowDeletion = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
+    var allowDeletion = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
 
     // TODO: add support for Arrays to deepExtend
     if (Array.isArray(b)) {
@@ -503,11 +504,11 @@ return /******/ (function(modules) { // webpackBootstrap
             // object is an ASP date
             return new Date(Number(match[1])); // parse number
           } else {
-              return moment(object).toDate(); // parse string
-            }
-        } else {
-            throw new Error('Cannot convert object of type ' + exports.getType(object) + ' to type Date');
+            return moment(object).toDate(); // parse string
           }
+        } else {
+          throw new Error('Cannot convert object of type ' + exports.getType(object) + ' to type Date');
+        }
 
       case 'Moment':
         if (exports.isNumber(object)) {
@@ -524,11 +525,11 @@ return /******/ (function(modules) { // webpackBootstrap
             // object is an ASP date
             return moment(Number(match[1])); // parse number
           } else {
-              return moment(object); // parse string
-            }
-        } else {
-            throw new Error('Cannot convert object of type ' + exports.getType(object) + ' to type Date');
+            return moment(object); // parse string
           }
+        } else {
+          throw new Error('Cannot convert object of type ' + exports.getType(object) + ' to type Date');
+        }
 
       case 'ISODate':
         if (exports.isNumber(object)) {
@@ -543,11 +544,11 @@ return /******/ (function(modules) { // webpackBootstrap
             // object is an ASP date
             return new Date(Number(match[1])).toISOString(); // parse number
           } else {
-              return new Date(object).toISOString(); // parse string
-            }
-        } else {
-            throw new Error('Cannot convert object of type ' + exports.getType(object) + ' to type ISODate');
+            return new Date(object).toISOString(); // parse string
           }
+        } else {
+          throw new Error('Cannot convert object of type ' + exports.getType(object) + ' to type ISODate');
+        }
 
       case 'ASPDate':
         if (exports.isNumber(object)) {
@@ -561,8 +562,8 @@ return /******/ (function(modules) { // webpackBootstrap
             // object is an ASP date
             value = new Date(Number(match[1])).valueOf(); // parse number
           } else {
-              value = new Date(object).valueOf(); // parse string
-            }
+            value = new Date(object).valueOf(); // parse string
+          }
           return '/Date(' + value + ')/';
         } else {
           throw new Error('Cannot convert object of type ' + exports.getType(object) + ' to type ASPDate');
@@ -840,8 +841,8 @@ return /******/ (function(modules) { // webpackBootstrap
     if (event.preventDefault) {
       event.preventDefault(); // non-IE browsers
     } else {
-        event.returnValue = false; // IE browsers
-      }
+      event.returnValue = false; // IE browsers
+    }
   };
 
   /**
@@ -1329,8 +1330,8 @@ return /******/ (function(modules) { // webpackBootstrap
    * @param [String] option      | this is the option key in the options argument
    */
   exports.mergeOptions = function (mergeTarget, options, option) {
-    var allowDeletion = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
-    var globalOptions = arguments.length <= 4 || arguments[4] === undefined ? {} : arguments[4];
+    var allowDeletion = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+    var globalOptions = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : {};
 
     if (options[option] === null) {
       mergeTarget[option] = Object.create(globalOptions[option]);
@@ -6006,6 +6007,7 @@ return /******/ (function(modules) { // webpackBootstrap
     point.setAttributeNS(null, "class", groupTemplate.className + " vis-point");
     //handle label
 
+
     if (labelObj) {
       var label = exports.getSVGElement('text', JSONcontainer, svgContainer);
       if (labelObj.xOffset) {
@@ -6060,7 +6062,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
   'use strict';
 
-  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
   var util = __webpack_require__(1);
   var Queue = __webpack_require__(10);
@@ -7577,7 +7579,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
   'use strict';
 
-  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
   var Emitter = __webpack_require__(13);
   var DataSet = __webpack_require__(9);
@@ -7823,8 +7825,8 @@ return /******/ (function(modules) { // webpackBootstrap
     } else if (backgroundColor === undefined) {
       // use use defaults
     } else {
-        throw 'Unsupported type of backgroundColor';
-      }
+      throw 'Unsupported type of backgroundColor';
+    }
 
     this.frame.style.backgroundColor = fill;
     this.frame.style.borderColor = stroke;
@@ -8532,9 +8534,9 @@ return /******/ (function(modules) { // webpackBootstrap
         widthMin = dotSize / 2; // px
         widthMax = dotSize / 2 + dotSize * 2; // Todo: put this in one function
       } else {
-          widthMin = 20; // px
-          widthMax = 20; // px
-        }
+        widthMin = 20; // px
+        widthMax = 20; // px
+      }
 
       var height = Math.max(this.frame.clientHeight * 0.25, 100);
       var top = this.margin;
@@ -9070,9 +9072,9 @@ return /******/ (function(modules) { // webpackBootstrap
               strokeStyle = this.axisColor; // TODO: should be customizable
             }
           } else {
-              fillStyle = 'gray';
-              strokeStyle = this.axisColor;
-            }
+            fillStyle = 'gray';
+            strokeStyle = this.axisColor;
+          }
 
           ctx.lineWidth = this._getStrokeWidth(point);
           ctx.fillStyle = fillStyle;
@@ -9088,39 +9090,39 @@ return /******/ (function(modules) { // webpackBootstrap
         }
       }
     } else {
-        // grid style
-        for (i = 0; i < this.dataPoints.length; i++) {
-          point = this.dataPoints[i];
-          right = this.dataPoints[i].pointRight;
-          top = this.dataPoints[i].pointTop;
+      // grid style
+      for (i = 0; i < this.dataPoints.length; i++) {
+        point = this.dataPoints[i];
+        right = this.dataPoints[i].pointRight;
+        top = this.dataPoints[i].pointTop;
 
-          if (point !== undefined && right !== undefined) {
-            // calculate Hue from the current value. At zMin the hue is 240, at zMax the hue is 0
-            zAvg = (point.point.z + right.point.z) / 2;
-            h = (1 - (zAvg - this.zMin) * this.scale.z / this.verticalRatio) * 240;
+        if (point !== undefined && right !== undefined) {
+          // calculate Hue from the current value. At zMin the hue is 240, at zMax the hue is 0
+          zAvg = (point.point.z + right.point.z) / 2;
+          h = (1 - (zAvg - this.zMin) * this.scale.z / this.verticalRatio) * 240;
 
-            ctx.lineWidth = this._getStrokeWidth(point) * 2;
-            ctx.strokeStyle = this._hsv2rgb(h, 1, 1);
-            ctx.beginPath();
-            ctx.moveTo(point.screen.x, point.screen.y);
-            ctx.lineTo(right.screen.x, right.screen.y);
-            ctx.stroke();
-          }
+          ctx.lineWidth = this._getStrokeWidth(point) * 2;
+          ctx.strokeStyle = this._hsv2rgb(h, 1, 1);
+          ctx.beginPath();
+          ctx.moveTo(point.screen.x, point.screen.y);
+          ctx.lineTo(right.screen.x, right.screen.y);
+          ctx.stroke();
+        }
 
-          if (point !== undefined && top !== undefined) {
-            // calculate Hue from the current value. At zMin the hue is 240, at zMax the hue is 0
-            zAvg = (point.point.z + top.point.z) / 2;
-            h = (1 - (zAvg - this.zMin) * this.scale.z / this.verticalRatio) * 240;
+        if (point !== undefined && top !== undefined) {
+          // calculate Hue from the current value. At zMin the hue is 240, at zMax the hue is 0
+          zAvg = (point.point.z + top.point.z) / 2;
+          h = (1 - (zAvg - this.zMin) * this.scale.z / this.verticalRatio) * 240;
 
-            ctx.lineWidth = this._getStrokeWidth(point) * 2;
-            ctx.strokeStyle = this._hsv2rgb(h, 1, 1);
-            ctx.beginPath();
-            ctx.moveTo(point.screen.x, point.screen.y);
-            ctx.lineTo(top.screen.x, top.screen.y);
-            ctx.stroke();
-          }
+          ctx.lineWidth = this._getStrokeWidth(point) * 2;
+          ctx.strokeStyle = this._hsv2rgb(h, 1, 1);
+          ctx.beginPath();
+          ctx.moveTo(point.screen.x, point.screen.y);
+          ctx.lineTo(top.screen.x, top.screen.y);
+          ctx.stroke();
         }
       }
+    }
   };
 
   Graph3d.prototype._getStrokeWidth = function (point) {
@@ -14575,9 +14577,9 @@ return /******/ (function(modules) { // webpackBootstrap
               min = getStart(minItem) - rhs * interval / delta; // ms
               max = getEnd(maxItem) + lhs * interval / delta; // ms
             } else {
-                min = getStart(minItem) - lhs * interval / delta; // ms
-                max = getEnd(maxItem) + rhs * interval / delta; // ms
-              }
+              min = getStart(minItem) - lhs * interval / delta; // ms
+              max = getEnd(maxItem) + rhs * interval / delta; // ms
+            }
           }
         }
       })();
@@ -14687,7 +14689,7 @@ return /******/ (function(modules) { // webpackBootstrap
     value: true
   });
 
-  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
   var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -14715,10 +14717,9 @@ return /******/ (function(modules) { // webpackBootstrap
    * @param configureOptions    | the fully configured and predefined options set found in allOptions.js
    * @param pixelRatio          | canvas pixel ratio
    */
-
   var Configurator = function () {
     function Configurator(parentModule, defaultContainer, configureOptions) {
-      var pixelRatio = arguments.length <= 3 || arguments[3] === undefined ? 1 : arguments[3];
+      var pixelRatio = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 1;
 
       _classCallCheck(this, Configurator);
 
@@ -15007,7 +15008,7 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: '_makeLabel',
       value: function _makeLabel(name, path) {
-        var objectLabel = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+        var objectLabel = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
         var div = document.createElement('div');
         div.className = 'vis-configuration vis-config-label vis-config-s' + path.length;
@@ -15338,8 +15339,8 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: '_handleObject',
       value: function _handleObject(obj) {
-        var path = arguments.length <= 1 || arguments[1] === undefined ? [] : arguments[1];
-        var checkOnly = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+        var path = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+        var checkOnly = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
         var show = false;
         var filter = this.options.filter;
@@ -15459,7 +15460,7 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: '_constructOptions',
       value: function _constructOptions(value, path) {
-        var optionsObj = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
+        var optionsObj = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
         var pointer = optionsObj;
 
@@ -15523,7 +15524,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
   var ColorPicker = function () {
     function ColorPicker() {
-      var pixelRatio = arguments.length <= 0 || arguments[0] === undefined ? 1 : arguments[0];
+      var pixelRatio = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
 
       _classCallCheck(this, ColorPicker);
 
@@ -15619,7 +15620,7 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: 'setColor',
       value: function setColor(color) {
-        var setInitial = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+        var setInitial = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
         if (color === 'none') {
           return;
@@ -15694,7 +15695,7 @@ return /******/ (function(modules) { // webpackBootstrap
       value: function _hide() {
         var _this = this;
 
-        var storePrevious = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
+        var storePrevious = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
 
         // store the previous color for next time;
         if (storePrevious === true) {
@@ -15768,7 +15769,7 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: '_setColor',
       value: function _setColor(rgba) {
-        var setInitial = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+        var setInitial = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
         // store the initial color
         if (setInitial === true) {
@@ -15828,7 +15829,7 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: '_updatePicker',
       value: function _updatePicker() {
-        var rgba = arguments.length <= 0 || arguments[0] === undefined ? this.color : arguments[0];
+        var rgba = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.color;
 
         var hsv = util.RGBToHSV(rgba.r, rgba.g, rgba.b);
         var ctx = this.colorPickerCanvas.getContext('2d');
@@ -16216,7 +16217,7 @@ return /******/ (function(modules) { // webpackBootstrap
     value: true
   });
 
-  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
   var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -16417,7 +16418,7 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: 'findInOptions',
       value: function findInOptions(option, options, path) {
-        var recursive = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
+        var recursive = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
 
         var min = 1e9;
         var closestMatch = '';
@@ -16451,7 +16452,7 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: 'printLocation',
       value: function printLocation(path, option) {
-        var prefix = arguments.length <= 2 || arguments[2] === undefined ? 'Problem value found at: \n' : arguments[2];
+        var prefix = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'Problem value found at: \n';
 
         var str = '\n\n' + prefix + 'options = {\n';
         for (var i = 0; i < path.length; i++) {
@@ -16536,7 +16537,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
   'use strict';
 
-  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
   var util = __webpack_require__(1);
   var hammerUtil = __webpack_require__(28);
@@ -17797,7 +17798,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
   'use strict';
 
-  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
   var Emitter = __webpack_require__(13);
   var Hammer = __webpack_require__(20);
@@ -18843,7 +18844,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
   'use strict';
 
-  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
   var Hammer = __webpack_require__(20);
   var util = __webpack_require__(1);
@@ -20091,9 +20092,9 @@ return /******/ (function(modules) { // webpackBootstrap
       var xAbs = util.getAbsoluteRight(this.dom.frame);
       var x = xAbs - event.center.x + 10; // plus 10 to compensate for the drag starting as soon as you've moved 10px
     } else {
-        var xAbs = util.getAbsoluteLeft(this.dom.frame);
-        var x = event.center.x - xAbs - 10; // minus 10 to compensate for the drag starting as soon as you've moved 10px
-      }
+      var xAbs = util.getAbsoluteLeft(this.dom.frame);
+      var x = event.center.x - xAbs - 10; // minus 10 to compensate for the drag starting as soon as you've moved 10px
+    }
 
     var time = this.body.util.toTime(x);
     var scale = this.body.util.getScale();
@@ -20181,8 +20182,8 @@ return /******/ (function(modules) { // webpackBootstrap
         if (this.options.rtl) {
           var offset = -(current - initial); // ms
         } else {
-            var offset = current - initial; // ms
-          }
+          var offset = current - initial; // ms
+        }
 
         var itemData = this._cloneItemData(props.item.data); // clone the data
         if (props.item.editable === false) {
@@ -20434,7 +20435,7 @@ return /******/ (function(modules) { // webpackBootstrap
                 orgOffset = 1;
                 continue;
               }
-              // found a group (apart from dragged group) that has the wrong position -> switch with the
+              // found a group (apart from dragged group) that has the wrong position -> switch with the 
               // group at the position where other one should be, fix index arrays and continue
               else {
                   var slippedPosition = newOrder.indexOf(origOrder[curPos + orgOffset]);
@@ -20493,7 +20494,7 @@ return /******/ (function(modules) { // webpackBootstrap
                 break;
               }
 
-              // found a group that has the wrong position -> switch with the
+              // found a group that has the wrong position -> switch with the 
               // group at the position where other one should be, fix index arrays and continue
               var slippedPosition = newOrder.indexOf(origOrder[curPos]);
               var switchGroup = dataset.get(newOrder[curPos]);
@@ -20668,16 +20669,16 @@ return /******/ (function(modules) { // webpackBootstrap
           }
         }
       } else {
-          // add/remove this item from the current selection
-          var index = selection.indexOf(item.id);
-          if (index == -1) {
-            // item is not yet selected -> select it
-            selection.push(item.id);
-          } else {
-            // item is already selected -> deselect it
-            selection.splice(index, 1);
-          }
+        // add/remove this item from the current selection
+        var index = selection.indexOf(item.id);
+        if (index == -1) {
+          // item is not yet selected -> select it
+          selection.push(item.id);
+        } else {
+          // item is already selected -> deselect it
+          selection.splice(index, 1);
         }
+      }
 
       this.setSelection(selection);
 
@@ -21278,8 +21279,8 @@ return /******/ (function(modules) { // webpackBootstrap
         clone.add(1, 'month');
         // important: first set Date to 1, after that change the month.
       } else {
-          clone.date(1);
-        }
+        clone.date(1);
+      }
 
       clone.hours(0);
       clone.minutes(0);
@@ -22475,14 +22476,14 @@ return /******/ (function(modules) { // webpackBootstrap
       //       a width which will not change when moving the Timeline
       //       So no re-stacking needed, which is nicer for the eye;
     } else {
-        if (this.options.rtl) {
-          this.right = start;
-        } else {
-          this.left = start;
-        }
-        this.width = boxWidth;
-        contentWidth = Math.min(end - start, this.props.content.width);
+      if (this.options.rtl) {
+        this.right = start;
+      } else {
+        this.left = start;
       }
+      this.width = boxWidth;
+      contentWidth = Math.min(end - start, this.props.content.width);
+    }
 
     if (this.options.rtl) {
       this.dom.box.style.right = this.right + 'px';
@@ -22527,12 +22528,12 @@ return /******/ (function(modules) { // webpackBootstrap
             contentStartPosition = -contentWidth; // ensure it's not visible anymore
           }
         } else {
-            if (start < 0) {
-              contentStartPosition = -start;
-            } else {
-              contentStartPosition = 0;
-            }
+          if (start < 0) {
+            contentStartPosition = -start;
+          } else {
+            contentStartPosition = 0;
           }
+        }
         if (this.options.rtl) {
           this.dom.content.style.right = contentStartPosition + 'px';
         } else {
@@ -23693,7 +23694,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
   'use strict';
 
-  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
   var util = __webpack_require__(1);
   var Component = __webpack_require__(31);
@@ -25161,6 +25162,7 @@ return /******/ (function(modules) { // webpackBootstrap
     this.itemsData = null; // DataSet
     this.groupsData = null; // DataSet
 
+
     this.on('tap', function (event) {
       me.emit('click', me.getEventProperties(event));
     });
@@ -25400,7 +25402,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
   'use strict';
 
-  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
   var util = __webpack_require__(1);
   var DOMutil = __webpack_require__(8);
@@ -26997,8 +26999,8 @@ return /******/ (function(modules) { // webpackBootstrap
    */
 
   function DataScale(start, end, autoScaleStart, autoScaleEnd, containerHeight, majorCharHeight) {
-    var zeroAlign = arguments.length <= 6 || arguments[6] === undefined ? false : arguments[6];
-    var formattingFunction = arguments.length <= 7 || arguments[7] === undefined ? false : arguments[7];
+    var zeroAlign = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : false;
+    var formattingFunction = arguments.length > 7 && arguments[7] !== undefined ? arguments[7] : false;
 
     this.majorSteps = [1, 2, 5, 10];
     this.minorSteps = [0.25, 0.5, 1, 2];
@@ -27139,24 +27141,24 @@ return /******/ (function(modules) { // webpackBootstrap
     if (other.minorStepIdx <= 1 && this.minorStepIdx <= 1 || other.minorStepIdx > 1 && this.minorStepIdx > 1) {
       //easy, no need to change stepIdx nor multiplication factor
     } else if (other.minorStepIdx < this.minorStepIdx) {
-        //I'm 5, they are 4 per major.
-        this.minorStepIdx = 1;
-        if (oldStepIdx == 2) {
-          increaseMagnitude();
-        } else {
-          increaseMagnitude();
-          increaseMagnitude();
-        }
+      //I'm 5, they are 4 per major.
+      this.minorStepIdx = 1;
+      if (oldStepIdx == 2) {
+        increaseMagnitude();
       } else {
-        //I'm 4, they are 5 per major
-        this.minorStepIdx = 2;
-        if (oldStepIdx == 1) {
-          decreaseMagnitude();
-        } else {
-          decreaseMagnitude();
-          decreaseMagnitude();
-        }
+        increaseMagnitude();
+        increaseMagnitude();
       }
+    } else {
+      //I'm 4, they are 5 per major
+      this.minorStepIdx = 2;
+      if (oldStepIdx == 1) {
+        decreaseMagnitude();
+      } else {
+        decreaseMagnitude();
+        decreaseMagnitude();
+      }
+    }
 
     //Get masters stats:
     var lines = other.getLines();
@@ -27234,7 +27236,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
   'use strict';
 
-  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
   var util = __webpack_require__(1);
   var DOMutil = __webpack_require__(8);
@@ -27658,7 +27660,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
   'use strict';
 
-  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
   var DOMutil = __webpack_require__(8);
 
@@ -29217,7 +29219,6 @@ return /******/ (function(modules) { // webpackBootstrap
    * @class Images
    * This class loads images and keeps them stored.
    */
-
   var Images = function () {
       function Images(callback) {
           _classCallCheck(this, Images);
@@ -29295,14 +29296,14 @@ return /******/ (function(modules) { // webpackBootstrap
           value: function load(url, brokenUrl, id) {
               var _this2 = this;
 
-              //Try and get the image from the cache, if successful then return the cached image  
+              //Try and get the image from the cache, if successful then return the cached image   
               var cachedImage = this.images[url];
               if (cachedImage) return cachedImage;
 
               //Create a new image
               var img = new Image();
 
-              //Subscribe to the event that is raised if the image loads successfully
+              //Subscribe to the event that is raised if the image loads successfully 
               img.onload = function () {
                   //Add the image to the cache and then request a redraw
                   _this2._addImageToCache(url, img);
@@ -29688,7 +29689,7 @@ return /******/ (function(modules) { // webpackBootstrap
       value: function setData(nodes) {
         var _this3 = this;
 
-        var doNotEmit = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+        var doNotEmit = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
         var oldNodesData = this.body.data.nodes;
 
@@ -29741,7 +29742,7 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: 'add',
       value: function add(ids) {
-        var doNotEmit = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+        var doNotEmit = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
         var id = void 0;
         var newNodes = [];
@@ -29820,14 +29821,14 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: 'create',
       value: function create(properties) {
-        var constructorClass = arguments.length <= 1 || arguments[1] === undefined ? _Node2.default : arguments[1];
+        var constructorClass = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _Node2.default;
 
         return new constructorClass(properties, this.body, this.images, this.groups, this.options);
       }
     }, {
       key: 'refresh',
       value: function refresh() {
-        var clearPositions = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
+        var clearPositions = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 
         var nodes = this.body.nodes;
         for (var nodeId in nodes) {
@@ -30105,7 +30106,6 @@ return /******/ (function(modules) { // webpackBootstrap
    *                                            example for the color
    *
    */
-
   var Node = function () {
     function Node(options, body, imagelist, grouplist, globalOptions) {
       _classCallCheck(this, Node);
@@ -30490,8 +30490,8 @@ return /******/ (function(modules) { // webpackBootstrap
     }], [{
       key: 'parseOptions',
       value: function parseOptions(parentOptions, newOptions) {
-        var allowDeletion = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
-        var globalOptions = arguments.length <= 3 || arguments[3] === undefined ? {} : arguments[3];
+        var allowDeletion = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+        var globalOptions = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
 
         var fields = ['color', 'font', 'fixed', 'shadow'];
         util.selectiveNotDeepExtend(fields, parentOptions, newOptions, allowDeletion);
@@ -30553,7 +30553,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
   var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
-  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
   var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -30563,7 +30563,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
   var Label = function () {
     function Label(body, options) {
-      var edgelabel = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+      var edgelabel = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
       _classCallCheck(this, Label);
 
@@ -30580,7 +30580,7 @@ return /******/ (function(modules) { // webpackBootstrap
     _createClass(Label, [{
       key: 'setOptions',
       value: function setOptions(options) {
-        var allowDeletion = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+        var allowDeletion = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
         this.nodeOptions = options;
 
@@ -30616,7 +30616,7 @@ return /******/ (function(modules) { // webpackBootstrap
        * @param baseline
        */
       value: function draw(ctx, x, y, selected) {
-        var baseline = arguments.length <= 4 || arguments[4] === undefined ? 'middle' : arguments[4];
+        var baseline = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 'middle';
 
         // if no label, return
         if (this.nodeOptions.label === undefined) return;
@@ -30680,7 +30680,7 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: '_drawText',
       value: function _drawText(ctx, selected, x, y) {
-        var baseline = arguments.length <= 4 || arguments[4] === undefined ? 'middle' : arguments[4];
+        var baseline = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 'middle';
 
         var fontSize = this.fontOptions.size;
         var viewFontSize = fontSize * this.body.view.scale;
@@ -30698,9 +30698,7 @@ return /******/ (function(modules) { // webpackBootstrap
         var fontColor = _getColor3[0];
         var strokeColor = _getColor3[1];
 
-
         // configure context for drawing the text
-
         var _setAlignment2 = this._setAlignment(ctx, x, yLine, baseline);
 
         var _setAlignment3 = _slicedToArray(_setAlignment2, 2);
@@ -30714,8 +30712,8 @@ return /******/ (function(modules) { // webpackBootstrap
           ctx.textAlign = this.fontOptions.align;
           x = x - 0.5 * this.size.width; // Shift label 1/2-distance to the left
         } else {
-            ctx.textAlign = 'center';
-          }
+          ctx.textAlign = 'center';
+        }
 
         // set the strokeWidth
         if (this.fontOptions.strokeWidth > 0) {
@@ -30747,11 +30745,11 @@ return /******/ (function(modules) { // webpackBootstrap
             ctx.textBaseline = 'alphabetic';
             yLine -= 2 * lineMargin; // distance from edge, required because we use alphabetic. Alphabetic has less difference between browsers
           } else if (this.fontOptions.align === 'bottom') {
-              ctx.textBaseline = 'hanging';
-              yLine += 2 * lineMargin; // distance from edge, required because we use hanging. Hanging has less difference between browsers
-            } else {
-                ctx.textBaseline = 'middle';
-              }
+            ctx.textBaseline = 'hanging';
+            yLine += 2 * lineMargin; // distance from edge, required because we use hanging. Hanging has less difference between browsers
+          } else {
+            ctx.textBaseline = 'middle';
+          }
         } else {
           ctx.textBaseline = baseline;
         }
@@ -30791,7 +30789,7 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: 'getTextSize',
       value: function getTextSize(ctx) {
-        var selected = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+        var selected = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
         var size = {
           width: this._processLabel(ctx, selected),
@@ -30813,9 +30811,9 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: 'calculateLabelSize',
       value: function calculateLabelSize(ctx, selected) {
-        var x = arguments.length <= 2 || arguments[2] === undefined ? 0 : arguments[2];
-        var y = arguments.length <= 3 || arguments[3] === undefined ? 0 : arguments[3];
-        var baseline = arguments.length <= 4 || arguments[4] === undefined ? 'middle' : arguments[4];
+        var x = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+        var y = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
+        var baseline = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 'middle';
 
         if (this.labelDirty === true) {
           this.size.width = this._processLabel(ctx, selected);
@@ -30865,7 +30863,7 @@ return /******/ (function(modules) { // webpackBootstrap
     }], [{
       key: 'parseOptions',
       value: function parseOptions(parentOptions, newOptions) {
-        var allowDeletion = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+        var allowDeletion = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
         if (typeof newOptions.font === 'string') {
           var newOptionsArray = newOptions.font.split(" ");
@@ -30914,7 +30912,7 @@ return /******/ (function(modules) { // webpackBootstrap
     function Box(options, body, labelModule) {
       _classCallCheck(this, Box);
 
-      return _possibleConstructorReturn(this, Object.getPrototypeOf(Box).call(this, options, body, labelModule));
+      return _possibleConstructorReturn(this, (Box.__proto__ || Object.getPrototypeOf(Box)).call(this, options, body, labelModule));
     }
 
     _createClass(Box, [{
@@ -31124,7 +31122,7 @@ return /******/ (function(modules) { // webpackBootstrap
     function Circle(options, body, labelModule) {
       _classCallCheck(this, Circle);
 
-      return _possibleConstructorReturn(this, Object.getPrototypeOf(Circle).call(this, options, body, labelModule));
+      return _possibleConstructorReturn(this, (Circle.__proto__ || Object.getPrototypeOf(Circle)).call(this, options, body, labelModule));
     }
 
     _createClass(Circle, [{
@@ -31209,7 +31207,7 @@ return /******/ (function(modules) { // webpackBootstrap
     function CircleImageBase(options, body, labelModule) {
       _classCallCheck(this, CircleImageBase);
 
-      var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(CircleImageBase).call(this, options, body, labelModule));
+      var _this = _possibleConstructorReturn(this, (CircleImageBase.__proto__ || Object.getPrototypeOf(CircleImageBase)).call(this, options, body, labelModule));
 
       _this.labelOffset = 0;
       _this.imageLoaded = false;
@@ -31410,7 +31408,7 @@ return /******/ (function(modules) { // webpackBootstrap
     function CircularImage(options, body, labelModule, imageObj) {
       _classCallCheck(this, CircularImage);
 
-      var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(CircularImage).call(this, options, body, labelModule));
+      var _this = _possibleConstructorReturn(this, (CircularImage.__proto__ || Object.getPrototypeOf(CircularImage)).call(this, options, body, labelModule));
 
       _this.imageObj = imageObj;
       _this._swapToImageResizeWhenImageLoaded = true;
@@ -31517,7 +31515,7 @@ return /******/ (function(modules) { // webpackBootstrap
     function Database(options, body, labelModule) {
       _classCallCheck(this, Database);
 
-      return _possibleConstructorReturn(this, Object.getPrototypeOf(Database).call(this, options, body, labelModule));
+      return _possibleConstructorReturn(this, (Database.__proto__ || Object.getPrototypeOf(Database)).call(this, options, body, labelModule));
     }
 
     _createClass(Database, [{
@@ -31626,7 +31624,7 @@ return /******/ (function(modules) { // webpackBootstrap
     function Diamond(options, body, labelModule) {
       _classCallCheck(this, Diamond);
 
-      return _possibleConstructorReturn(this, Object.getPrototypeOf(Diamond).call(this, options, body, labelModule));
+      return _possibleConstructorReturn(this, (Diamond.__proto__ || Object.getPrototypeOf(Diamond)).call(this, options, body, labelModule));
     }
 
     _createClass(Diamond, [{
@@ -31681,7 +31679,7 @@ return /******/ (function(modules) { // webpackBootstrap
     function ShapeBase(options, body, labelModule) {
       _classCallCheck(this, ShapeBase);
 
-      return _possibleConstructorReturn(this, Object.getPrototypeOf(ShapeBase).call(this, options, body, labelModule));
+      return _possibleConstructorReturn(this, (ShapeBase.__proto__ || Object.getPrototypeOf(ShapeBase)).call(this, options, body, labelModule));
     }
 
     _createClass(ShapeBase, [{
@@ -31788,7 +31786,7 @@ return /******/ (function(modules) { // webpackBootstrap
     function Dot(options, body, labelModule) {
       _classCallCheck(this, Dot);
 
-      return _possibleConstructorReturn(this, Object.getPrototypeOf(Dot).call(this, options, body, labelModule));
+      return _possibleConstructorReturn(this, (Dot.__proto__ || Object.getPrototypeOf(Dot)).call(this, options, body, labelModule));
     }
 
     _createClass(Dot, [{
@@ -31844,7 +31842,7 @@ return /******/ (function(modules) { // webpackBootstrap
     function Ellipse(options, body, labelModule) {
       _classCallCheck(this, Ellipse);
 
-      return _possibleConstructorReturn(this, Object.getPrototypeOf(Ellipse).call(this, options, body, labelModule));
+      return _possibleConstructorReturn(this, (Ellipse.__proto__ || Object.getPrototypeOf(Ellipse)).call(this, options, body, labelModule));
     }
 
     _createClass(Ellipse, [{
@@ -31962,7 +31960,7 @@ return /******/ (function(modules) { // webpackBootstrap
     function Icon(options, body, labelModule) {
       _classCallCheck(this, Icon);
 
-      return _possibleConstructorReturn(this, Object.getPrototypeOf(Icon).call(this, options, body, labelModule));
+      return _possibleConstructorReturn(this, (Icon.__proto__ || Object.getPrototypeOf(Icon)).call(this, options, body, labelModule));
     }
 
     _createClass(Icon, [{
@@ -32076,7 +32074,7 @@ return /******/ (function(modules) { // webpackBootstrap
     function Image(options, body, labelModule, imageObj) {
       _classCallCheck(this, Image);
 
-      var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Image).call(this, options, body, labelModule));
+      var _this = _possibleConstructorReturn(this, (Image.__proto__ || Object.getPrototypeOf(Image)).call(this, options, body, labelModule));
 
       _this.imageObj = imageObj;
       return _this;
@@ -32193,7 +32191,7 @@ return /******/ (function(modules) { // webpackBootstrap
     function Square(options, body, labelModule) {
       _classCallCheck(this, Square);
 
-      return _possibleConstructorReturn(this, Object.getPrototypeOf(Square).call(this, options, body, labelModule));
+      return _possibleConstructorReturn(this, (Square.__proto__ || Object.getPrototypeOf(Square)).call(this, options, body, labelModule));
     }
 
     _createClass(Square, [{
@@ -32248,7 +32246,7 @@ return /******/ (function(modules) { // webpackBootstrap
     function Star(options, body, labelModule) {
       _classCallCheck(this, Star);
 
-      return _possibleConstructorReturn(this, Object.getPrototypeOf(Star).call(this, options, body, labelModule));
+      return _possibleConstructorReturn(this, (Star.__proto__ || Object.getPrototypeOf(Star)).call(this, options, body, labelModule));
     }
 
     _createClass(Star, [{
@@ -32303,7 +32301,7 @@ return /******/ (function(modules) { // webpackBootstrap
     function Text(options, body, labelModule) {
       _classCallCheck(this, Text);
 
-      return _possibleConstructorReturn(this, Object.getPrototypeOf(Text).call(this, options, body, labelModule));
+      return _possibleConstructorReturn(this, (Text.__proto__ || Object.getPrototypeOf(Text)).call(this, options, body, labelModule));
     }
 
     _createClass(Text, [{
@@ -32388,7 +32386,7 @@ return /******/ (function(modules) { // webpackBootstrap
     function Triangle(options, body, labelModule) {
       _classCallCheck(this, Triangle);
 
-      return _possibleConstructorReturn(this, Object.getPrototypeOf(Triangle).call(this, options, body, labelModule));
+      return _possibleConstructorReturn(this, (Triangle.__proto__ || Object.getPrototypeOf(Triangle)).call(this, options, body, labelModule));
     }
 
     _createClass(Triangle, [{
@@ -32443,7 +32441,7 @@ return /******/ (function(modules) { // webpackBootstrap
     function TriangleDown(options, body, labelModule) {
       _classCallCheck(this, TriangleDown);
 
-      return _possibleConstructorReturn(this, Object.getPrototypeOf(TriangleDown).call(this, options, body, labelModule));
+      return _possibleConstructorReturn(this, (TriangleDown.__proto__ || Object.getPrototypeOf(TriangleDown)).call(this, options, body, labelModule));
     }
 
     _createClass(TriangleDown, [{
@@ -32706,7 +32704,7 @@ return /******/ (function(modules) { // webpackBootstrap
       value: function setData(edges) {
         var _this3 = this;
 
-        var doNotEmit = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+        var doNotEmit = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
         var oldEdgesData = this.body.data.edges;
 
@@ -32758,7 +32756,7 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: 'add',
       value: function add(ids) {
-        var doNotEmit = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+        var doNotEmit = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
         var edges = this.body.edges;
         var edgesData = this.body.data.edges;
@@ -32924,7 +32922,7 @@ return /******/ (function(modules) { // webpackBootstrap
     value: true
   });
 
-  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
   var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -32969,7 +32967,6 @@ return /******/ (function(modules) { // webpackBootstrap
    * @param {Object} constants      An object with default values for
    *                                example for the color
    */
-
   var Edge = function () {
     function Edge(options, body, globalOptions) {
       _classCallCheck(this, Edge);
@@ -33057,7 +33054,6 @@ return /******/ (function(modules) { // webpackBootstrap
       }
     }, {
       key: 'updateLabelModule',
-      // set the object back to the global options
 
 
       /**
@@ -33430,8 +33426,8 @@ return /******/ (function(modules) { // webpackBootstrap
     }], [{
       key: 'parseOptions',
       value: function parseOptions(parentOptions, newOptions) {
-        var allowDeletion = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
-        var globalOptions = arguments.length <= 3 || arguments[3] === undefined ? {} : arguments[3];
+        var allowDeletion = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+        var globalOptions = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
 
         var fields = ['arrowStrikethrough', 'id', 'from', 'hidden', 'hoverWidth', 'label', 'labelHighlightBold', 'length', 'line', 'opacity', 'physics', 'scaling', 'selectionWidth', 'selfReferenceSize', 'inactive', 'data', 'ancillary', 'to', 'title', 'value', 'width'];
 
@@ -33517,7 +33513,7 @@ return /******/ (function(modules) { // webpackBootstrap
         if (newOptions.font !== undefined && newOptions.font !== null) {
           _Label2.default.parseOptions(parentOptions.font, newOptions);
         } else if (allowDeletion === true && newOptions.font === null) {
-          parentOptions.font = util.bridgeObject(globalOptions.font);
+          parentOptions.font = util.bridgeObject(globalOptions.font); // set the object back to the global options
         }
       }
     }]);
@@ -33559,7 +33555,7 @@ return /******/ (function(modules) { // webpackBootstrap
     function CubicBezierEdge(options, body, labelModule) {
       _classCallCheck(this, CubicBezierEdge);
 
-      return _possibleConstructorReturn(this, Object.getPrototypeOf(CubicBezierEdge).call(this, options, body, labelModule));
+      return _possibleConstructorReturn(this, (CubicBezierEdge.__proto__ || Object.getPrototypeOf(CubicBezierEdge)).call(this, options, body, labelModule));
     }
 
     /**
@@ -33631,7 +33627,7 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: '_getDistanceToEdge',
       value: function _getDistanceToEdge(x1, y1, x2, y2, x3, y3) {
-        var _ref = arguments.length <= 6 || arguments[6] === undefined ? this._getViaCoordinates() : arguments[6];
+        var _ref = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : this._getViaCoordinates();
 
         var _ref2 = _slicedToArray(_ref, 2);
 
@@ -33652,7 +33648,7 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: 'getPoint',
       value: function getPoint(percentage) {
-        var _ref3 = arguments.length <= 1 || arguments[1] === undefined ? this._getViaCoordinates() : arguments[1];
+        var _ref3 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this._getViaCoordinates();
 
         var _ref4 = _slicedToArray(_ref3, 2);
 
@@ -33707,7 +33703,7 @@ return /******/ (function(modules) { // webpackBootstrap
     function CubicBezierEdgeBase(options, body, labelModule) {
       _classCallCheck(this, CubicBezierEdgeBase);
 
-      return _possibleConstructorReturn(this, Object.getPrototypeOf(CubicBezierEdgeBase).call(this, options, body, labelModule));
+      return _possibleConstructorReturn(this, (CubicBezierEdgeBase.__proto__ || Object.getPrototypeOf(CubicBezierEdgeBase)).call(this, options, body, labelModule));
     }
 
     /**
@@ -33793,7 +33789,7 @@ return /******/ (function(modules) { // webpackBootstrap
     function BezierEdgeBase(options, body, labelModule) {
       _classCallCheck(this, BezierEdgeBase);
 
-      return _possibleConstructorReturn(this, Object.getPrototypeOf(BezierEdgeBase).call(this, options, body, labelModule));
+      return _possibleConstructorReturn(this, (BezierEdgeBase.__proto__ || Object.getPrototypeOf(BezierEdgeBase)).call(this, options, body, labelModule));
     }
 
     /**
@@ -33814,7 +33810,7 @@ return /******/ (function(modules) { // webpackBootstrap
     _createClass(BezierEdgeBase, [{
       key: '_findBorderPositionBezier',
       value: function _findBorderPositionBezier(nearNode, ctx) {
-        var viaNode = arguments.length <= 2 || arguments[2] === undefined ? this._getViaCoordinates() : arguments[2];
+        var viaNode = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : this._getViaCoordinates();
 
         var maxIterations = 10;
         var iteration = 0;
@@ -33840,19 +33836,19 @@ return /******/ (function(modules) { // webpackBootstrap
           if (Math.abs(difference) < threshold) {
             break; // found
           } else if (difference < 0) {
-              // distance to nodes is larger than distance to border --> t needs to be bigger if we're looking at the to node.
-              if (from === false) {
-                low = middle;
-              } else {
-                high = middle;
-              }
+            // distance to nodes is larger than distance to border --> t needs to be bigger if we're looking at the to node.
+            if (from === false) {
+              low = middle;
             } else {
-              if (from === false) {
-                high = middle;
-              } else {
-                low = middle;
-              }
+              high = middle;
             }
+          } else {
+            if (from === false) {
+              high = middle;
+            } else {
+              low = middle;
+            }
+          }
 
           iteration++;
         }
@@ -34179,19 +34175,19 @@ return /******/ (function(modules) { // webpackBootstrap
           if (Math.abs(difference) < threshold) {
             break; // found
           } else if (difference > 0) {
-              // distance to nodes is larger than distance to border --> t needs to be bigger if we're looking at the to node.
-              if (direction > 0) {
-                low = middle;
-              } else {
-                high = middle;
-              }
+            // distance to nodes is larger than distance to border --> t needs to be bigger if we're looking at the to node.
+            if (direction > 0) {
+              low = middle;
             } else {
-              if (direction > 0) {
-                high = middle;
-              } else {
-                low = middle;
-              }
+              high = middle;
             }
+          } else {
+            if (direction > 0) {
+              high = middle;
+            } else {
+              low = middle;
+            }
+          }
           iteration++;
         }
         pos.t = middle;
@@ -34421,28 +34417,27 @@ return /******/ (function(modules) { // webpackBootstrap
             arrowPoint = this.getPoint(0.5, viaNode); // this is 0.6 to account for the size of the arrow.
           }
         } else {
-            // draw circle
+          // draw circle
+          var _getCircleData12 = this._getCircleData(ctx);
 
-            var _getCircleData12 = this._getCircleData(ctx);
+          var _getCircleData13 = _slicedToArray(_getCircleData12, 3);
 
-            var _getCircleData13 = _slicedToArray(_getCircleData12, 3);
-
-            var x = _getCircleData13[0];
-            var y = _getCircleData13[1];
-            var radius = _getCircleData13[2];
+          var x = _getCircleData13[0];
+          var y = _getCircleData13[1];
+          var radius = _getCircleData13[2];
 
 
-            if (position === 'from') {
-              arrowPoint = this.findBorderPosition(this.from, ctx, { x: x, y: y, low: 0.25, high: 0.6, direction: -1 });
-              angle = arrowPoint.t * -2 * Math.PI + 1.5 * Math.PI + 0.1 * Math.PI;
-            } else if (position === 'to') {
-              arrowPoint = this.findBorderPosition(this.from, ctx, { x: x, y: y, low: 0.6, high: 1.0, direction: 1 });
-              angle = arrowPoint.t * -2 * Math.PI + 1.5 * Math.PI - 1.1 * Math.PI;
-            } else {
-              arrowPoint = this._pointOnCircle(x, y, radius, 0.175);
-              angle = 3.9269908169872414; // === 0.175 * -2 * Math.PI + 1.5 * Math.PI + 0.1 * Math.PI;
-            }
+          if (position === 'from') {
+            arrowPoint = this.findBorderPosition(this.from, ctx, { x: x, y: y, low: 0.25, high: 0.6, direction: -1 });
+            angle = arrowPoint.t * -2 * Math.PI + 1.5 * Math.PI + 0.1 * Math.PI;
+          } else if (position === 'to') {
+            arrowPoint = this.findBorderPosition(this.from, ctx, { x: x, y: y, low: 0.6, high: 1.0, direction: 1 });
+            angle = arrowPoint.t * -2 * Math.PI + 1.5 * Math.PI - 1.1 * Math.PI;
+          } else {
+            arrowPoint = this._pointOnCircle(x, y, radius, 0.175);
+            angle = 3.9269908169872414; // === 0.175 * -2 * Math.PI + 1.5 * Math.PI + 0.1 * Math.PI;
           }
+        }
 
         var length = 15 * scaleFactor + 3 * lineWidth; // 3* lineWidth is the width of the edge.
 
@@ -34554,8 +34549,7 @@ return /******/ (function(modules) { // webpackBootstrap
       _classCallCheck(this, BezierEdgeDynamic);
 
       // --> this calls the setOptions below
-
-      var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(BezierEdgeDynamic).call(this, options, body, labelModule));
+      var _this = _possibleConstructorReturn(this, (BezierEdgeDynamic.__proto__ || Object.getPrototypeOf(BezierEdgeDynamic)).call(this, options, body, labelModule));
       //this.via = undefined; // Here for completeness but not allowed to defined before super() is invoked.
 
 
@@ -34702,7 +34696,7 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: "getPoint",
       value: function getPoint(percentage) {
-        var viaNode = arguments.length <= 1 || arguments[1] === undefined ? this.via : arguments[1];
+        var viaNode = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.via;
 
         var t = percentage;
         var x = Math.pow(1 - t, 2) * this.fromPoint.x + 2 * t * (1 - t) * viaNode.x + Math.pow(t, 2) * this.toPoint.x;
@@ -34758,7 +34752,7 @@ return /******/ (function(modules) { // webpackBootstrap
     function BezierEdgeStatic(options, body, labelModule) {
       _classCallCheck(this, BezierEdgeStatic);
 
-      return _possibleConstructorReturn(this, Object.getPrototypeOf(BezierEdgeStatic).call(this, options, body, labelModule));
+      return _possibleConstructorReturn(this, (BezierEdgeStatic.__proto__ || Object.getPrototypeOf(BezierEdgeStatic)).call(this, options, body, labelModule));
     }
 
     /**
@@ -34958,14 +34952,14 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: '_findBorderPosition',
       value: function _findBorderPosition(nearNode, ctx) {
-        var options = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
+        var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
         return this._findBorderPositionBezier(nearNode, ctx, options.via);
       }
     }, {
       key: '_getDistanceToEdge',
       value: function _getDistanceToEdge(x1, y1, x2, y2, x3, y3) {
-        var viaNode = arguments.length <= 6 || arguments[6] === undefined ? this._getViaCoordinates() : arguments[6];
+        var viaNode = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : this._getViaCoordinates();
         // x3,y3 is the point
         return this._getDistanceToBezierEdge(x1, y1, x2, y2, x3, y3, viaNode);
       }
@@ -34981,7 +34975,7 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: 'getPoint',
       value: function getPoint(percentage) {
-        var viaNode = arguments.length <= 1 || arguments[1] === undefined ? this._getViaCoordinates() : arguments[1];
+        var viaNode = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this._getViaCoordinates();
 
         var t = percentage;
         var x = Math.pow(1 - t, 2) * this.fromPoint.x + 2 * t * (1 - t) * viaNode.x + Math.pow(t, 2) * this.toPoint.x;
@@ -35026,7 +35020,7 @@ return /******/ (function(modules) { // webpackBootstrap
     function StraightEdge(options, body, labelModule) {
       _classCallCheck(this, StraightEdge);
 
-      return _possibleConstructorReturn(this, Object.getPrototypeOf(StraightEdge).call(this, options, body, labelModule));
+      return _possibleConstructorReturn(this, (StraightEdge.__proto__ || Object.getPrototypeOf(StraightEdge)).call(this, options, body, labelModule));
     }
 
     /**
@@ -35407,7 +35401,7 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: 'stopSimulation',
       value: function stopSimulation() {
-        var emit = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
+        var emit = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
 
         this.stabilized = true;
         if (emit === true) {
@@ -35458,7 +35452,7 @@ return /******/ (function(modules) { // webpackBootstrap
       value: function _emitStabilized() {
         var _this2 = this;
 
-        var amountOfIterations = arguments.length <= 0 || arguments[0] === undefined ? this.stabilizationIterations : arguments[0];
+        var amountOfIterations = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.stabilizationIterations;
 
         if (this.stabilizationIterations > 1 || this.startedStabilization === true) {
           setTimeout(function () {
@@ -35715,9 +35709,9 @@ return /******/ (function(modules) { // webpackBootstrap
           velocities[nodeId].x = Math.abs(velocities[nodeId].x) > maxVelocity ? velocities[nodeId].x > 0 ? maxVelocity : -maxVelocity : velocities[nodeId].x;
           node.x += velocities[nodeId].x * timestep; // position
         } else {
-            forces[nodeId].x = 0;
-            velocities[nodeId].x = 0;
-          }
+          forces[nodeId].x = 0;
+          velocities[nodeId].x = 0;
+        }
 
         if (node.options.fixed.y === false) {
           var dy = this.modelOptions.damping * velocities[nodeId].y; // damping force
@@ -35726,9 +35720,9 @@ return /******/ (function(modules) { // webpackBootstrap
           velocities[nodeId].y = Math.abs(velocities[nodeId].y) > maxVelocity ? velocities[nodeId].y > 0 ? maxVelocity : -maxVelocity : velocities[nodeId].y;
           node.y += velocities[nodeId].y * timestep; // position
         } else {
-            forces[nodeId].y = 0;
-            velocities[nodeId].y = 0;
-          }
+          forces[nodeId].y = 0;
+          velocities[nodeId].y = 0;
+        }
 
         var totalVelocity = Math.sqrt(Math.pow(velocities[nodeId].x, 2) + Math.pow(velocities[nodeId].y, 2));
         return totalVelocity;
@@ -35798,7 +35792,7 @@ return /******/ (function(modules) { // webpackBootstrap
       value: function stabilize() {
         var _this3 = this;
 
-        var iterations = arguments.length <= 0 || arguments[0] === undefined ? this.options.stabilization.iterations : arguments[0];
+        var iterations = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.options.stabilization.iterations;
 
         if (typeof iterations !== 'number') {
           console.log('The stabilize method needs a numeric amount of iterations. Switching to default: ', this.options.stabilization.iterations);
@@ -36134,6 +36128,7 @@ return /******/ (function(modules) { // webpackBootstrap
             maxX -= 0.5 * sizeDiff;
           } // xSize < ySize
 
+
         var minimumTreeSize = 1e-5;
         var rootSize = Math.max(minimumTreeSize, Math.abs(maxX - minX));
         var halfRootSize = 0.5 * rootSize;
@@ -36363,6 +36358,7 @@ return /******/ (function(modules) { // webpackBootstrap
       }
 
       //---------------------------  DEBUGGING BELOW  ---------------------------//
+
 
       /**
        * This function is for debugging purposed, it draws the tree.
@@ -36969,7 +36965,7 @@ return /******/ (function(modules) { // webpackBootstrap
     function ForceAtlas2BasedRepulsionSolver(body, physicsBody, options) {
       _classCallCheck(this, ForceAtlas2BasedRepulsionSolver);
 
-      return _possibleConstructorReturn(this, Object.getPrototypeOf(ForceAtlas2BasedRepulsionSolver).call(this, body, physicsBody, options));
+      return _possibleConstructorReturn(this, (ForceAtlas2BasedRepulsionSolver.__proto__ || Object.getPrototypeOf(ForceAtlas2BasedRepulsionSolver)).call(this, body, physicsBody, options));
     }
 
     /**
@@ -37043,7 +37039,7 @@ return /******/ (function(modules) { // webpackBootstrap
     function ForceAtlas2BasedCentralGravitySolver(body, physicsBody, options) {
       _classCallCheck(this, ForceAtlas2BasedCentralGravitySolver);
 
-      return _possibleConstructorReturn(this, Object.getPrototypeOf(ForceAtlas2BasedCentralGravitySolver).call(this, body, physicsBody, options));
+      return _possibleConstructorReturn(this, (ForceAtlas2BasedCentralGravitySolver.__proto__ || Object.getPrototypeOf(ForceAtlas2BasedCentralGravitySolver)).call(this, body, physicsBody, options));
     }
 
     /**
@@ -37079,7 +37075,7 @@ return /******/ (function(modules) { // webpackBootstrap
     value: true
   });
 
-  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
   var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -37162,8 +37158,8 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: 'cluster',
       value: function cluster() {
-        var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-        var refreshData = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+        var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+        var refreshData = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
         if (options.joinCondition === undefined) {
           throw new Error("Cannot call clusterByNodeData without a joinCondition function in the options.");
@@ -37206,7 +37202,7 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: 'clusterByEdgeCount',
       value: function clusterByEdgeCount(edgeCount, options) {
-        var refreshData = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
+        var refreshData = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
 
         options = this._checkOptions(options);
         var clusters = [];
@@ -37289,7 +37285,7 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: 'clusterOutliers',
       value: function clusterOutliers(options) {
-        var refreshData = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+        var refreshData = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
         this.clusterByEdgeCount(1, options, refreshData);
       }
@@ -37303,7 +37299,7 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: 'clusterBridges',
       value: function clusterBridges(options) {
-        var refreshData = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+        var refreshData = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
         this.clusterByEdgeCount(2, options, refreshData);
       }
@@ -37318,7 +37314,7 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: 'clusterByConnection',
       value: function clusterByConnection(nodeId, options) {
-        var refreshData = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
+        var refreshData = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
 
         // kill conditions
         if (nodeId === undefined) {
@@ -37478,7 +37474,7 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: '_checkOptions',
       value: function _checkOptions() {
-        var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+        var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
         if (options.clusterEdgeProperties === undefined) {
           options.clusterEdgeProperties = {};
@@ -37502,7 +37498,7 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: '_cluster',
       value: function _cluster(childNodesObj, childEdgesObj, options) {
-        var refreshData = arguments.length <= 3 || arguments[3] === undefined ? true : arguments[3];
+        var refreshData = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
 
         // kill condition: no children so can't cluster or only one node in the cluster, don't bother
         if (Object.keys(childNodesObj).length < 2) {
@@ -37688,7 +37684,7 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: 'openCluster',
       value: function openCluster(clusterNodeId, options) {
-        var refreshData = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
+        var refreshData = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
 
         // kill conditions
         if (clusterNodeId === undefined) {
@@ -37966,7 +37962,7 @@ return /******/ (function(modules) { // webpackBootstrap
     _createClass(NetworkUtil, null, [{
       key: "getRange",
       value: function getRange(allNodes) {
-        var specificNodes = arguments.length <= 1 || arguments[1] === undefined ? [] : arguments[1];
+        var specificNodes = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
 
         var minY = 1e9,
             maxY = -1e9,
@@ -38004,7 +38000,7 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: "getRangeCore",
       value: function getRangeCore(allNodes) {
-        var specificNodes = arguments.length <= 1 || arguments[1] === undefined ? [] : arguments[1];
+        var specificNodes = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
 
         var minY = 1e9,
             maxY = -1e9,
@@ -38100,14 +38096,13 @@ return /******/ (function(modules) { // webpackBootstrap
   /**
    *
    */
-
   var Cluster = function (_Node) {
     _inherits(Cluster, _Node);
 
     function Cluster(options, body, imagelist, grouplist, globalOptions) {
       _classCallCheck(this, Cluster);
 
-      var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Cluster).call(this, options, body, imagelist, grouplist, globalOptions));
+      var _this = _possibleConstructorReturn(this, (Cluster.__proto__ || Object.getPrototypeOf(Cluster)).call(this, options, body, imagelist, grouplist, globalOptions));
 
       _this.isCluster = true;
       _this.containedNodes = {};
@@ -38130,7 +38125,7 @@ return /******/ (function(modules) { // webpackBootstrap
     value: true
   });
 
-  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
   var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -38233,8 +38228,8 @@ return /******/ (function(modules) { // webpackBootstrap
             if (this.requiresTimeout === true) {
               this.renderTimer = window.setTimeout(this._renderStep.bind(this), this.simulationInterval); // wait this.renderTimeStep milliseconds and perform the animation step function
             } else {
-                this.renderTimer = window.requestAnimationFrame(this._renderStep.bind(this)); // wait this.renderTimeStep milliseconds and perform the animation step function
-              }
+              this.renderTimer = window.requestAnimationFrame(this._renderStep.bind(this)); // wait this.renderTimeStep milliseconds and perform the animation step function
+            }
           }
         }
       }
@@ -38300,7 +38295,7 @@ return /******/ (function(modules) { // webpackBootstrap
       value: function _redraw() {
         var _this3 = this;
 
-        var hidden = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
+        var hidden = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 
         if (this.allowRedraw === true) {
           var _ret = function () {
@@ -38446,7 +38441,7 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: '_drawNodes',
       value: function _drawNodes(ctx, nodes) {
-        var alwaysShow = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+        var alwaysShow = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
         var node = void 0;
         var selected = [];
@@ -38652,7 +38647,7 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: '_getCameraState',
       value: function _getCameraState() {
-        var pixelRatio = arguments.length <= 0 || arguments[0] === undefined ? this.pixelRatio : arguments[0];
+        var pixelRatio = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.pixelRatio;
 
         if (this.initialized === true) {
           this.cameraState.previousWidth = this.frame.canvas.width / pixelRatio;
@@ -38843,8 +38838,8 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: 'setSize',
       value: function setSize() {
-        var width = arguments.length <= 0 || arguments[0] === undefined ? this.options.width : arguments[0];
-        var height = arguments.length <= 1 || arguments[1] === undefined ? this.options.height : arguments[1];
+        var width = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.options.width;
+        var height = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.options.height;
 
         width = this._prepareValue(width);
         height = this._prepareValue(height);
@@ -39052,7 +39047,7 @@ return /******/ (function(modules) { // webpackBootstrap
     _createClass(View, [{
       key: 'setOptions',
       value: function setOptions() {
-        var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+        var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
         this.options = options;
       }
@@ -39066,8 +39061,8 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: 'fit',
       value: function fit() {
-        var options = arguments.length <= 0 || arguments[0] === undefined ? { nodes: [] } : arguments[0];
-        var initialZoom = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+        var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { nodes: [] };
+        var initialZoom = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
         var range = void 0;
         var zoomLevel = void 0;
@@ -39135,7 +39130,7 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: 'focus',
       value: function focus(nodeId) {
-        var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+        var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
         if (this.body.nodes[nodeId] !== undefined) {
           var nodePosition = { x: this.body.nodes[nodeId].x, y: this.body.nodes[nodeId].y };
@@ -39307,7 +39302,7 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: '_transitionRedraw',
       value: function _transitionRedraw() {
-        var finished = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
+        var finished = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 
         this.easingTime += this.animationSpeed;
         this.easingTime = finished === true ? 1.0 : this.easingTime;
@@ -39575,7 +39570,7 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: 'checkSelectionChanges',
       value: function checkSelectionChanges(pointer, event) {
-        var add = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+        var add = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
         var previouslySelectedEdgeCount = this.selectionHandler._getSelectedEdgeCount();
         var previouslySelectedNodeCount = this.selectionHandler._getSelectedNodeCount();
@@ -40638,7 +40633,6 @@ return /******/ (function(modules) { // webpackBootstrap
    * @param {Object} [style]     An object containing borderColor,
    *                             backgroundColor, etc.
    */
-
   var Popup = function () {
     function Popup(container) {
       _classCallCheck(this, Popup);
@@ -40876,7 +40870,7 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: '_generateClickEvent',
       value: function _generateClickEvent(eventType, event, pointer, oldSelection) {
-        var emptySelection = arguments.length <= 4 || arguments[4] === undefined ? false : arguments[4];
+        var emptySelection = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
 
         var properties = void 0;
         if (emptySelection === true) {
@@ -40898,7 +40892,7 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: 'selectObject',
       value: function selectObject(obj) {
-        var highlightEdges = arguments.length <= 1 || arguments[1] === undefined ? this.options.selectConnectedEdges : arguments[1];
+        var highlightEdges = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.options.selectConnectedEdges;
 
         if (obj !== undefined) {
           if (obj instanceof _Node2.default) {
@@ -40972,7 +40966,7 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: 'getNodeAt',
       value: function getNodeAt(pointer) {
-        var returnNode = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+        var returnNode = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
         // we first check if this is an navigation controls element
         var positionObject = this._pointerToPositionObject(pointer);
@@ -41035,7 +41029,7 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: 'getEdgeAt',
       value: function getEdgeAt(pointer) {
-        var returnEdge = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+        var returnEdge = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
         var positionObject = this._pointerToPositionObject(pointer);
         var overlappingEdges = this._getAllEdgesOverlappingWith(positionObject);
@@ -41464,7 +41458,7 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: 'setSelection',
       value: function setSelection(selection) {
-        var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+        var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
         var i = void 0,
             id = void 0;
@@ -41511,7 +41505,7 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: 'selectNodes',
       value: function selectNodes(selection) {
-        var highlightEdges = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+        var highlightEdges = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
         if (!selection || selection.length === undefined) throw 'Selection must be an array with ids';
 
@@ -41574,7 +41568,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
   var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
-  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
   var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -42037,7 +42031,7 @@ return /******/ (function(modules) { // webpackBootstrap
         // get a min max width as well as the maximum movement space it has on either sides
         // we use min max terminology because width and height can interchange depending on the direction of the layout
         var getBranchBoundary = function getBranchBoundary(branchMap) {
-          var maxLevel = arguments.length <= 1 || arguments[1] === undefined ? 1e9 : arguments[1];
+          var maxLevel = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1e9;
 
           var minSpace = 1e9;
           var maxSpace = 1e9;
@@ -42130,7 +42124,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
         // callback for shifting branches
         var branchShiftCallback = function branchShiftCallback(node1, node2) {
-          var centerParent = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+          var centerParent = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
           //window.CALLBACKS.push(() => {
           var pos1 = _this2._getPositionForHierarchy(node1);
@@ -42861,7 +42855,7 @@ return /******/ (function(modules) { // webpackBootstrap
       value: function _crawlNetwork() {
         var _this7 = this;
 
-        var callback = arguments.length <= 0 || arguments[0] === undefined ? function () {} : arguments[0];
+        var callback = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : function () {};
         var startingNodeId = arguments[1];
 
         var progress = {};
@@ -42989,7 +42983,7 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: '_setPositionForHierarchy',
       value: function _setPositionForHierarchy(node, position, level) {
-        var doNotUpdate = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
+        var doNotUpdate = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
 
         //console.log('_setPositionForHierarchy',node.id, position)
         if (doNotUpdate !== true) {
@@ -43777,7 +43771,7 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: '_createSeperator',
       value: function _createSeperator() {
-        var index = arguments.length <= 0 || arguments[0] === undefined ? 1 : arguments[0];
+        var index = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
 
         this.manipulationDOM['seperatorLineDiv' + index] = document.createElement('div');
         this.manipulationDOM['seperatorLineDiv' + index].className = 'vis-separator-line';
@@ -43836,7 +43830,7 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: '_createButton',
       value: function _createButton(id, className, label) {
-        var labelClassName = arguments.length <= 3 || arguments[3] === undefined ? 'vis-label' : arguments[3];
+        var labelClassName = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'vis-label';
 
 
         this.manipulationDOM[id + 'Div'] = document.createElement('div');
@@ -44088,6 +44082,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
       // ------------------------------------ END OF EDIT EDGE FUNCTIONS -----------------------------------------//
 
+
       // ------------------------------------------- ADD EDGE FUNCTIONS -----------------------------------------//
       /**
        * the function bound to the selection event. It checks if you want to connect a cluster and changes the description
@@ -44200,6 +44195,7 @@ return /******/ (function(modules) { // webpackBootstrap
       }
 
       // --------------------------------------- END OF ADD EDGE FUNCTIONS -------------------------------------//
+
 
       // ------------------------------ Performing all the actual data manipulation ------------------------//
 
@@ -44830,7 +44826,6 @@ return /******/ (function(modules) { // webpackBootstrap
       solver: ['barnesHut', 'forceAtlas2Based', 'repulsion', 'hierarchicalRepulsion'],
       timestep: [0.5, 0.01, 1, 0.01]
     },
-    //adaptiveTimestep: true
     global: {
       locale: ['en', 'nl']
     }
@@ -44870,7 +44865,6 @@ return /******/ (function(modules) { // webpackBootstrap
    *
    * Possible optimizations in the distance calculation can be implemented.
    */
-
   var KamadaKawai = function () {
     function KamadaKawai(body, edgeLength, edgeStrength) {
       _classCallCheck(this, KamadaKawai);
@@ -44909,7 +44903,7 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: "solve",
       value: function solve(nodesArray, edgesArray) {
-        var ignoreClusters = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+        var ignoreClusters = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
         // get distance matrix
         var D_matrix = this.distanceSolver.getDistances(this.body, nodesArray, edgesArray); // distance matrix
@@ -45250,6 +45244,7 @@ return /******/ (function(modules) { // webpackBootstrap
       var s2 = s / 2;
       var ir = Math.sqrt(3) / 6 * s; // radius of inner circle
       var h = Math.sqrt(s * s - s2 * s2); // height
+
 
       this.moveTo(x, y - (h - ir));
       this.lineTo(x + s2, y + ir);
@@ -45838,10 +45833,10 @@ return /******/ (function(modules) { // webpackBootstrap
       if (token === 'false') {
         token = false; // convert to boolean
       } else if (token === 'true') {
-          token = true; // convert to boolean
-        } else if (!isNaN(Number(token))) {
-            token = Number(token); // convert to number
-          }
+        token = true; // convert to boolean
+      } else if (!isNaN(Number(token))) {
+        token = Number(token); // convert to number
+      }
       tokenType = TOKENTYPE.IDENTIFIER;
       return;
     }
@@ -45983,8 +45978,8 @@ return /******/ (function(modules) { // webpackBootstrap
       getToken();
       // TODO: implement comma separated list with "a_list: ID=ID [','] [a_list] "
     } else {
-        parseNodeStatement(graph, id);
-      }
+      parseNodeStatement(graph, id);
+    }
   }
 
   /**
@@ -46491,31 +46486,31 @@ return /******/ (function(modules) { // webpackBootstrap
   // German
   exports['de'] = {
     edit: 'Editieren',
-    del: 'Lösche Auswahl',
-    back: 'Zurück',
-    addNode: 'Knoten hinzufügen',
-    addEdge: 'Kante hinzufügen',
+    del: 'L\xF6sche Auswahl',
+    back: 'Zur\xFCck',
+    addNode: 'Knoten hinzuf\xFCgen',
+    addEdge: 'Kante hinzuf\xFCgen',
     editNode: 'Knoten editieren',
     editEdge: 'Kante editieren',
     addDescription: 'Klicke auf eine freie Stelle, um einen neuen Knoten zu plazieren.',
     edgeDescription: 'Klicke auf einen Knoten und ziehe die Kante zu einem anderen Knoten, um diese zu verbinden.',
     editEdgeDescription: 'Klicke auf die Verbindungspunkte und ziehe diese auf einen Knoten, um sie zu verbinden.',
-    createEdgeError: 'Es ist nicht möglich, Kanten mit Clustern zu verbinden.',
-    deleteClusterError: 'Cluster können nicht gelöscht werden.',
-    editClusterError: 'Cluster können nicht editiert werden.'
+    createEdgeError: 'Es ist nicht m\xF6glich, Kanten mit Clustern zu verbinden.',
+    deleteClusterError: 'Cluster k\xF6nnen nicht gel\xF6scht werden.',
+    editClusterError: 'Cluster k\xF6nnen nicht editiert werden.'
   };
   exports['de_DE'] = exports['de'];
 
   // Spanish
   exports['es'] = {
     edit: 'Editar',
-    del: 'Eliminar selección',
-    back: 'Átras',
-    addNode: 'Añadir nodo',
-    addEdge: 'Añadir arista',
+    del: 'Eliminar selecci\xF3n',
+    back: '\xC1tras',
+    addNode: 'A\xF1adir nodo',
+    addEdge: 'A\xF1adir arista',
     editNode: 'Editar nodo',
     editEdge: 'Editar arista',
-    addDescription: 'Haga clic en un lugar vacío para colocar un nuevo nodo.',
+    addDescription: 'Haga clic en un lugar vac\xEDo para colocar un nuevo nodo.',
     edgeDescription: 'Haga clic en un nodo y arrastre la arista hacia otro nodo para conectarlos.',
     editEdgeDescription: 'Haga clic en un punto de control y arrastrelo a un nodo para conectarlo.',
     createEdgeError: 'No se puede conectar una arista a un grupo.',
