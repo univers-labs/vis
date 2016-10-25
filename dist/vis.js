@@ -5,7 +5,7 @@
  * A dynamic, browser-based visualization library.
  *
  * @version 4.16.7
- * @date    2016-10-18
+ * @date    2016-10-25
  *
  * @license
  * Copyright (C) 2011-2016 Almende B.V, http://almende.com
@@ -40173,9 +40173,9 @@ return /******/ (function(modules) { // webpackBootstrap
           var fromPopup = this.ancillaryPopups.from;
           var toPopup = this.ancillaryPopups.to;
 
-          if (distance < 100) {
+          var width = this.popup.frame.clientWidth;
+          if (distance < width) {
 
-            var width = this.popup.frame.clientWidth;
             if (fromObj.x < toObj.x) {
               fromPopup.setPosition(px - width / 2, py + this.options.labelOffset.y);
               toPopup.setPosition(px + width / 2, py + this.options.labelOffset.y);
