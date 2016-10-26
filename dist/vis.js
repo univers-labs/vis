@@ -4,8 +4,8 @@
  *
  * A dynamic, browser-based visualization library.
  *
- * @version 4.16.7
- * @date    2016-10-25
+ * @version 4.16.8
+ * @date    2016-10-26
  *
  * @license
  * Copyright (C) 2011-2016 Almende B.V, http://almende.com
@@ -33345,7 +33345,7 @@ return /******/ (function(modules) { // webpackBootstrap
         if (this.connected) {
           var distMax = 80;
           if (this.options.ancillary) {
-            distMax = 10;
+            distMax = 40;
           }
           var xFrom = this.from.x;
           var yFrom = this.from.y;
@@ -40025,6 +40025,8 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: '_checkShowPopup',
       value: function _checkShowPopup(pointer) {
+        var _this4 = this;
+
         var x = this.canvas._XconvertDOMtoCanvas(pointer.x);
         var y = this.canvas._YconvertDOMtoCanvas(pointer.y);
         var pointerObj = {
@@ -40063,29 +40065,40 @@ return /******/ (function(modules) { // webpackBootstrap
         }
 
         if (this.popupObj === undefined && nodeUnderCursor === false) {
-          // search the edges for overlap
-          var edgeIndices = this.body.edgeIndices;
-          var edges = this.body.edges;
-          var edge = void 0;
-          var overlappingEdges = [];
-          for (var _i4 = 0; _i4 < edgeIndices.length; _i4++) {
-            edge = edges[edgeIndices[_i4]];
-            if (edge.isOverlappingWith(pointerObj) === true) {
-              if (edge.connected === true && edge.getTitle() !== undefined) {
-                overlappingEdges.push(edgeIndices[_i4]);
+          (function () {
+            // search the edges for overlap
+            var edgeIndices = _this4.body.edgeIndices;
+            var edges = _this4.body.edges;
+            var edge = void 0;
+            var overlappingEdges = [];
+            for (var _i4 = 0; _i4 < edgeIndices.length; _i4++) {
+              edge = edges[edgeIndices[_i4]];
+              if (edge.isOverlappingWith(pointerObj) === true) {
+                if (edge.connected === true && edge.getTitle() !== undefined) {
+                  overlappingEdges.push(edgeIndices[_i4]);
+                }
               }
             }
-          }
 
-          if (overlappingEdges.length > 0) {
-            this.popupObj = edges[overlappingEdges[overlappingEdges.length - 1]];
-            popupType = 'edge';
-          }
+            if (overlappingEdges.length > 0) {
+              // bring active edges to the front
+              overlappingEdges = overlappingEdges.sort(function (a, b) {
+                if (edges[a].options.inactive) {
+                  return -1;
+                }
+                return 0;
+              });
+              _this4.popupObj = edges[overlappingEdges[overlappingEdges.length - 1]];
+              popupType = 'edge';
+            }
+          })();
         }
 
         if (this.popupObj !== undefined) {
           // show popup message window
-          if (this.popupObj.id !== previousPopupObjId) {
+          if (this.popupObj.options.inactive) {
+            this.popupObj = undefined;
+          } else if (this.popupObj.id !== previousPopupObjId && !this.popupObj.options.inactive) {
             if (this.popup === undefined) {
               this.popup = new _Popup2.default(this.canvas.frame);
             }
