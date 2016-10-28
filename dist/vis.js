@@ -39503,6 +39503,7 @@ return /******/ (function(modules) { // webpackBootstrap
       key: 'onTap',
       value: function onTap(event) {
         var pointer = this.getPointer(event.center);
+        this._checkShowPopup(pointer, true);
         var multiselect = this.selectionHandler.options.multiselect && (event.changedPointers[0].ctrlKey || event.changedPointers[0].metaKey);
 
         this.checkSelectionChanges(pointer, event, multiselect);
@@ -40027,6 +40028,8 @@ return /******/ (function(modules) { // webpackBootstrap
       value: function _checkShowPopup(pointer) {
         var _this4 = this;
 
+        var clicked = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
         var x = this.canvas._XconvertDOMtoCanvas(pointer.x);
         var y = this.canvas._YconvertDOMtoCanvas(pointer.y);
         var pointerObj = {
@@ -40096,9 +40099,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
         if (this.popupObj !== undefined) {
           // show popup message window
-          if (this.popupObj.options.inactive) {
+          if (this.popupObj.options.inactive && !clicked) {
             this.popupObj = undefined;
-          } else if (this.popupObj.id !== previousPopupObjId && !this.popupObj.options.inactive) {
+          } else if (this.popupObj.id !== previousPopupObjId && (!this.popupObj.options.inactive || clicked)) {
             if (this.popup === undefined) {
               this.popup = new _Popup2.default(this.canvas.frame);
             }
